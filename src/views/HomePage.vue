@@ -2,6 +2,7 @@
 import HomeHeader from '../components/HomeHeader.vue'
 import HomeBanner from '../components/HomeBanner.vue'
 import CompCategory from '../components/CompCategory.vue'
+import ListRecipes from '../components/ListRecipes.vue'
 </script>
 
 <template>
@@ -9,6 +10,7 @@ import CompCategory from '../components/CompCategory.vue'
     <HomeHeader />
     <HomeBanner />
     <CompCategory />
+    <ListRecipes />
   </div>
 </template>
 
