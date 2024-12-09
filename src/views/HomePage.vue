@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import HomeHeader from '../components/HomeHeader.vue'
-import HomeBanner from '../components/HomeBanner.vue'
-import CompCategory from '../components/CompCategory.vue'
-import ListRecipes from '../components/ListRecipes.vue'
+import HomeHeader from '../components/home/HomeHeader.vue'
+import HomeBanner from '../components/home/HomeBanner.vue'
+import CompCategory from '../components/home/CompCategory.vue'
+import ListRecipes from '../components/home/ListRecipes.vue'
+import LearnMoreComp from '@/components/home/LearnMoreComp.vue'
+import CheckOutComp from '@/components/home/CheckOutComp.vue'
+import MoreRecipesComp from '@/components/home/MoreRecipesComp.vue'
+import SubscribeCardComp from '@/components/home/SubscribeCardComp.vue'
+import FooterComp from '@/components/home/FooterComp.vue'
 </script>
 
 <template>
@@ -11,6 +16,11 @@ import ListRecipes from '../components/ListRecipes.vue'
     <HomeBanner />
     <CompCategory />
     <ListRecipes />
+    <LearnMoreComp />
+    <CheckOutComp />
+    <MoreRecipesComp />
+    <SubscribeCardComp />
+    <FooterComp />
   </div>
 </template>
 
