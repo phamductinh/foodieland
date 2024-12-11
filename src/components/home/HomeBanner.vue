@@ -96,7 +96,7 @@ import PlayIcon from '../icons/svgs/PlayIcon.vue'
         width: 100%;
         border-bottom-left-radius: 0;
         border-top-right-radius: 40px;
-        padding: 30px;
+        padding: 30px 20px;
       }
 
       .hot-recipes {
@@ -142,6 +142,10 @@ import PlayIcon from '../icons/svgs/PlayIcon.vue'
         white-space: normal;
         cursor: pointer;
         position: relative;
+
+        @media (max-width: 1023px) {
+          font-size: 50px;
+        }
       }
 
       .desc {

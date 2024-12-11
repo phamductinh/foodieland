@@ -27,36 +27,36 @@
 const listItems = [
   {
     name: 'Breakfast',
-    image: 'src/components/icons/category/breakfast.png',
+    image: '/src/components/icons/category/breakfast.png',
     backgroundColor:
       'linear-gradient(180deg, rgba(112, 130, 70, 0.00) 0%, rgba(112, 130, 70, 0.10) 100%)',
   },
   {
     name: 'Vegan',
-    image: 'src/components/icons/category/vegan.png',
+    image: '/src/components/icons/category/vegan.png',
     backgroundColor:
       'linear-gradient(180deg, rgba(108, 198, 63, 0.00) 0%, rgba(108, 198, 63, 0.10) 100%)',
   },
   {
     name: 'Meat',
-    image: 'src/components/icons/category/meat.png',
+    image: '/src/components/icons/category/meat.png',
     backgroundColor:
       'linear-gradient(180deg, rgba(204, 38, 27, 0.00) 0%, rgba(204, 38, 27, 0.10) 100%)',
   },
   {
     name: 'Dessert',
-    image: 'src/components/icons/category/dessert.png',
+    image: '/src/components/icons/category/dessert.png',
     backgroundColor:
       'linear-gradient(180deg, rgba(240, 158, 0, 0.00) 0%, rgba(240, 158, 0, 0.10) 100%)',
   },
   {
     name: 'Chocolate',
-    image: 'src/components/icons/category/chocolate.png',
+    image: '/src/components/icons/category/chocolate.png',
     backgroundColor: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 0%, rgba(0, 0, 0, 0.05) 100%)',
   },
   {
     name: 'Lunch',
-    image: 'src/components/icons/category/lunch.png',
+    image: '/src/components/icons/category/lunch.png',
     backgroundColor: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 0%, rgba(0, 0, 0, 0.05) 100%)',
   },
 ]
@@ -88,6 +88,10 @@ const listItems = [
         font-weight: 600;
         line-height: normal;
         letter-spacing: -1.92px;
+
+        @media (max-width: 1023px) {
+          font-size: 40px;
+        }
       }
 
       button {
@@ -117,6 +121,7 @@ const listItems = [
 
       @media (max-width: 1023px) {
         gap: 50px 20px;
+        justify-content: space-evenly;
       }
 
       .item {

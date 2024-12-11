@@ -63,6 +63,8 @@ import StarIcon from './icons/svgs/StarIcon.vue'
 
   .ads-img {
     position: absolute;
+    height: 85%;
+    width: auto;
     bottom: -20px;
     left: 50%;
     transform: translate(-50%);

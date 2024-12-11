@@ -34,13 +34,13 @@ interface Recipe {
 
 const recipes: Recipe[] = [
   {
-    image: 'src/components/icons/banner.jpeg',
+    image: '/src/components/icons/banner.jpeg',
     title: 'Big and Juicy Wagyu Beef Cheeseburger',
     time: '30 minutes',
     type: 'Breakfast',
   },
   {
-    image: 'src/components/icons/banner.jpeg',
+    image: '/src/components/icons/banner.jpeg',
     title: 'Big and Juicy Wagyu Beef Cheeseburger',
     time: '30 minutes',
     type: 'Breakfast',
@@ -63,6 +63,14 @@ const recipes: Recipe[] = [
     align-items: center;
     margin-bottom: 90px;
 
+    @media (max-width: 1023px) {
+      margin-bottom: 50px;
+    }
+
+    @media (max-width: 600px) {
+      margin-bottom: 30px;
+    }
+
     h2 {
       color: #000;
       font-family: Inter;
@@ -71,6 +79,10 @@ const recipes: Recipe[] = [
       font-weight: 600;
       line-height: normal;
       letter-spacing: -1.92px;
+
+      @media (max-width: 1023px) {
+        font-size: 40px;
+      }
     }
 
     p {

@@ -33,10 +33,18 @@ const listItemsFooter = [
 footer {
   padding: 50px 80px;
 
+  @media (max-width: 1023px) {
+    padding: 50px 30px;
+  }
+
   .top {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    @media (max-width: 1023px) {
+      justify-content: center;
+    }
 
     .infor {
       .logo {
@@ -46,6 +54,10 @@ footer {
         font-style: normal;
         font-weight: 400;
         line-height: normal;
+
+        @media (max-width: 1023px) {
+          text-align: center;
+        }
 
         span {
           color: #ff7426;
@@ -64,6 +76,10 @@ footer {
     }
 
     nav {
+      @media (max-width: 1023px) {
+        display: none;
+      }
+
       ul {
         display: flex;
         gap: 20px;
@@ -102,6 +118,10 @@ footer {
     justify-content: center;
     position: relative;
 
+    @media (max-width: 1023px) {
+      justify-content: space-between;
+    }
+
     p {
       color: rgba(0, 0, 0, 0.6);
       font-family: 'Inter';
@@ -115,6 +135,10 @@ footer {
     svg {
       position: absolute;
       right: 0;
+
+      @media (max-width: 1023px) {
+        position: relative;
+      }
     }
   }
 }

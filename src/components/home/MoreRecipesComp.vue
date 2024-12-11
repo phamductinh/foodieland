@@ -24,6 +24,8 @@
 </template>
 <script setup lang="ts">
 import RecipeCard from '../RecipeCard.vue'
+import { eventBus } from '@/utils/eventBus'
+import { ref, watchEffect } from 'vue'
 
 interface Recipe {
   image: string
@@ -33,9 +35,28 @@ interface Recipe {
   description?: string
 }
 
-const recipes: Recipe[] = [
+watchEffect(() => {
+  const formData = eventBus.listen()
+  if (formData) {
+    const imageUrl: string = formData.image
+      ? formData.image instanceof File
+        ? URL.createObjectURL(formData.image)
+        : formData.image
+      : ''
+
+    recipes.value.push({
+      image: imageUrl,
+      title: formData.title,
+      time: formData.time,
+      type: formData.type,
+      description: formData.description,
+    })
+  }
+})
+
+const recipes = ref<Recipe[]>([
   {
-    image: 'src/components/icons/banner.jpeg',
+    image: '/src/components/icons/banner.jpeg',
     title: 'Big and Juicy Wagyu Beef Cheeseburger',
     time: '30 minutes',
     type: 'Breakfast',
@@ -43,7 +64,7 @@ const recipes: Recipe[] = [
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit, harum! Nobis ut a inventore sequi deserunt nam labore exercitationem quam! Alias culpa sequi earum? Iste quae maxime impedit debitis beatae?',
   },
   {
-    image: 'src/components/icons/banner.jpeg',
+    image: '/src/components/icons/banner.jpeg',
     title: 'Big and Juicy Wagyu Beef Cheeseburger',
     time: '30 minutes',
     type: 'Breakfast',
@@ -51,22 +72,31 @@ const recipes: Recipe[] = [
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit, harum! Nobis ut a inventore sequi deserunt nam labore exercitationem quam! Alias culpa sequi earum? Iste quae maxime impedit debitis beatae?',
   },
   {
-    image: 'src/components/icons/banner.jpeg',
+    image: '/src/components/icons/banner.jpeg',
     title: 'Big and Juicy Wagyu Beef Cheeseburger',
     time: '30 minutes',
     type: 'Breakfast',
     description:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit, harum! Nobis ut a inventore sequi deserunt nam labore exercitationem quam! Alias culpa sequi earum? Iste quae maxime impedit debitis beatae?',
   },
-]
+])
 </script>
 <style lang="scss">
 .more-recipes-container {
   padding: 80px;
 
+  @media (max-width: 1023px) {
+    padding: 30px;
+  }
+
   .top {
     display: flex;
     align-items: center;
+
+    @media (max-width: 1023px) {
+      flex-direction: column;
+      align-items: start;
+    }
 
     h2 {
       width: 50%;
@@ -77,6 +107,11 @@ const recipes: Recipe[] = [
       font-weight: 600;
       line-height: normal;
       letter-spacing: -1.92px;
+
+      @media (max-width: 1023px) {
+        width: 80%;
+        font-size: 40px;
+      }
     }
 
     p {
@@ -87,6 +122,13 @@ const recipes: Recipe[] = [
       font-style: normal;
       font-weight: 400;
       line-height: 28px;
+      padding-left: 10px;
+
+      @media (max-width: 1023px) {
+        width: 80%;
+        padding-left: 0;
+        padding-top: 15px;
+      }
     }
   }
 
@@ -101,7 +143,7 @@ const recipes: Recipe[] = [
       padding: 0;
 
       .card-content {
-        padding: 0
+        padding: 0;
       }
     }
   }

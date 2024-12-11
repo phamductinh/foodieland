@@ -2,14 +2,16 @@
   <div class="card">
     <div class="card-image">
       <img :src="image" :alt="title" />
-      <button class="card-favorite">
+      <button class="card-favorite" @click="toggleFavorite">
         <slot name="favorite-icon">
-          <FavoriteIcon />
+          <UnFavoriteIcon v-if="!isFavorite" />
+          <FavoriteIcon v-else />
         </slot>
       </button>
     </div>
     <div class="card-content">
       <h3>{{ title }}</h3>
+      <!-- v-show -->
       <p v-if="description" class="card-description">{{ description }}</p>
       <div class="card-info">
         <div class="time">
@@ -29,6 +31,8 @@
 import TimeIcon from './icons/svgs/TimeIcon.vue'
 import TypeFoodIcon from './icons/svgs/TypeFoodIcon.vue'
 import FavoriteIcon from './icons/svgs/FavoriteIcon.vue'
+import UnFavoriteIcon from './icons/svgs/UnFavoriteIcon.vue'
+import { ref } from 'vue'
 defineProps({
   image: {
     type: String,
@@ -51,6 +55,12 @@ defineProps({
     required: false,
   },
 })
+
+const isFavorite = ref(false)
+
+const toggleFavorite = () => {
+  isFavorite.value = !isFavorite.value
+}
 </script>
 
 <style lang="scss" scoped>
@@ -58,13 +68,16 @@ defineProps({
   border-radius: 30px;
   background: linear-gradient(180deg, rgba(231, 249, 253, 0) 0%, #e7f9fd 100%);
   overflow: hidden;
-  transition: transform 0.3s;
   padding: 16px;
   cursor: pointer;
   font-family: 'Inter';
 
-  &:hover {
+  &:hover img {
     transform: scale(1.02);
+  }
+
+  &:hover .card-content h3 {
+    color: #4ad8f8;
   }
 
   .card-image {
@@ -72,9 +85,23 @@ defineProps({
 
     img {
       width: 100%;
-      height: auto;
+      height: 250px;
       display: block;
       border-radius: 30px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+
+      @media (min-width: 1920px) {
+        height: 400px;
+      }
+
+      @media (min-width: 1661px) and (max-width: 1919px) {
+        height: 350px;
+      }
+
+      @media (min-width: 1439px) and (max-width: 1660px) {
+        height: 300px;
+      }
     }
 
     .card-favorite {
@@ -100,6 +127,7 @@ defineProps({
       line-height: 32px;
       letter-spacing: -0.96px;
       margin-top: 15px;
+      transition: all 0.3s ease;
     }
 
     .card-description {

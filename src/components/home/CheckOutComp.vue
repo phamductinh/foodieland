@@ -77,6 +77,10 @@ const posts: Post[] = [
   .content {
     padding: 80px;
 
+    @media (max-width: 1023px) {
+      padding: 50px 30px;
+    }
+
     .top {
       display: flex;
       flex-direction: column;
@@ -91,6 +95,10 @@ const posts: Post[] = [
         font-weight: 600;
         line-height: normal;
         letter-spacing: -1.92px;
+
+        @media (max-width: 1023px) {
+          font-size: 40px;
+        }
       }
 
       p {
@@ -116,6 +124,10 @@ const posts: Post[] = [
       display: flex;
       justify-content: center;
       margin-top: 80px;
+
+      @media (max-width: 1023px) {
+        margin-top: 50px;
+      }
 
       .btn-check-out {
         width: 229px;
