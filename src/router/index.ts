@@ -22,6 +22,11 @@ const routes = [
     component: () => import('@/views/BlogComp.vue'),
   },
   {
+    path: '/details-blog/:id',
+    name: 'DetailsBlog',
+    component: () => import('@/views/DetailsBlog.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: () => import('@/components/NotFound.vue'),
@@ -31,6 +36,9 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior() {
+    return { top: 0 }
+  },
 })
 
 export default router

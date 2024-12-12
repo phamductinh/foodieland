@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" @click="viewDetails(id)">
     <div class="card-image">
       <img :src="image" :alt="title" />
       <button class="card-favorite" @click="toggleFavorite">
@@ -33,7 +33,13 @@ import TypeFoodIcon from './icons/svgs/TypeFoodIcon.vue'
 import FavoriteIcon from './icons/svgs/FavoriteIcon.vue'
 import UnFavoriteIcon from './icons/svgs/UnFavoriteIcon.vue'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 defineProps({
+  id: {
+    type: Number,
+    required: true,
+  },
   image: {
     type: String,
     required: true,
@@ -60,6 +66,10 @@ const isFavorite = ref(false)
 
 const toggleFavorite = () => {
   isFavorite.value = !isFavorite.value
+}
+
+const viewDetails = (id: number) => {
+  router.push(`/details-recipe/${id}`)
 }
 </script>
 

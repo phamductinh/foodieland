@@ -74,7 +74,7 @@ import FooterComp from '@/components/home/FooterComp.vue'
 import MoreRecipesComp from '@/components/home/MoreRecipesComp.vue'
 import InputComp from '@/components/InputComp.vue'
 import FileUploadIcon from '@/components/icons/svgs/FileUploadIcon.vue'
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { eventBus } from '@/utils/eventBus'
 
 interface FormData {
@@ -93,13 +93,8 @@ const formData = ref<FormData>({
   image: null,
 })
 const imagePreview = ref<string | null>(null)
-const errors = ref({
-  title: '',
-  description: '',
-  time: '',
-  type: '',
-  image: '',
-})
+
+const errors = reactive({}) as Record<keyof FormData, string>
 
 const handleSubmit = () => {
   const fields = [
@@ -113,11 +108,12 @@ const handleSubmit = () => {
   let hasError = false
 
   for (const field of fields) {
-    if (!formData.value[field.key as keyof FormData]) {
-      errors[field.key as keyof FormData] = field.message
+    const key = field.key as keyof FormData
+    if (!formData.value[key]) {
+      errors[key] = field.message
       hasError = true
     } else {
-      errors[field.key as keyof FormData] = ''
+      errors[key] = ''
     }
   }
 
@@ -155,7 +151,7 @@ const onImageChange = (event: Event) => {
     reader.readAsDataURL(file)
   }
 
-  errors.value.image = ''
+  errors.image = ''
 }
 
 const resetImage = (event: MouseEvent) => {

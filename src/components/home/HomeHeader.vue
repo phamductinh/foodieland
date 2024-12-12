@@ -1,10 +1,10 @@
 <template>
   <header>
-    <div class="logo">Foodieland<span>.</span></div>
+    <div class="logo" @click="goBackHome">Foodieland<span>.</span></div>
     <nav :class="isMenuOpen ? 'toggle-nav' : ''">
       <ul>
         <li v-for="(item, index) in listItemsHeader" :key="index">
-          <a :href="item.path">{{ item.name }}</a>
+          <router-link :to="item.path" exact active-class="active">{{ item.name }}</router-link>
         </li>
       </ul>
     </nav>
@@ -19,12 +19,18 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import SocialIcon from '../icons/svgs/SocialIcon.vue'
 import { ref } from 'vue'
+const router = useRouter()
 const isMenuOpen = ref(false)
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
+}
+
+const goBackHome = () => {
+  router.push(`/`)
 }
 
 const listItemsHeader = [
@@ -53,6 +59,7 @@ header {
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    cursor: pointer;
 
     span {
       color: #ff7426;
@@ -124,6 +131,10 @@ header {
           line-height: normal;
           letter-spacing: -0.32px;
           text-decoration: none;
+
+          &.active {
+            color: #01e3b2;
+          }
 
           @media (max-width: 1023px) {
             color: #fff;

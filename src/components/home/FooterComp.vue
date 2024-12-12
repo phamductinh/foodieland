@@ -72,6 +72,7 @@ footer {
         font-weight: 400;
         line-height: 28px;
         margin-top: 14px;
+        text-align: center;
       }
     }
 

@@ -11,6 +11,7 @@
       <RecipeCard
         v-for="(recipe, index) in recipes"
         :key="index"
+        :id="recipe.id"
         :image="recipe.image"
         :title="recipe.title"
         :time="recipe.time"
@@ -26,6 +27,7 @@ import RecipeCard from '../RecipeCard.vue'
 import AdsComp from '../AdsComp.vue'
 
 interface Recipe {
+  id: number
   image: string
   title: string
   time: string
@@ -34,12 +36,14 @@ interface Recipe {
 
 const recipes: Recipe[] = [
   {
+    id: 1,
     image: '/src/components/icons/banner.jpeg',
     title: 'Big and Juicy Wagyu Beef Cheeseburger',
     time: '30 minutes',
     type: 'Breakfast',
   },
   {
+    id: 2,
     image: '/src/components/icons/banner.jpeg',
     title: 'Big and Juicy Wagyu Beef Cheeseburger',
     time: '30 minutes',

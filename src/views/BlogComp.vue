@@ -1,5 +1,5 @@
 <template>
-  <div class="blog-container">
+  <div class="blogs-container" ref="blog_container">
     <HomeHeader />
     <div class="blog">
       <h1>Blog & Article</h1>
@@ -16,11 +16,10 @@
 
       <div class="content">
         <div class="left">
-          <div class="items">
-            <!-- List blogs -->
-          </div>
+          <ListBlogs />
+          <div ref="bottom"></div>
         </div>
-        <div class="right">
+        <div class="right" ref="sticky">
           <OtherRecipe />
           <div class="ads">
             <AdsComp />
@@ -38,9 +37,10 @@ import OtherRecipe from '@/components/OtherRecipe.vue'
 import AdsComp from '@/components/AdsComp.vue'
 import SubscribeCardComp from '@/components/home/SubscribeCardComp.vue'
 import FooterComp from '@/components/home/FooterComp.vue'
+import ListBlogs from '@/components/ListBlogs.vue'
 </script>
-<style lang="scss">
-.blog-container {
+<style lang="scss" scoped>
+.blogs-container {
   .blog {
     padding: 50px 80px;
 
@@ -69,6 +69,10 @@ import FooterComp from '@/components/home/FooterComp.vue'
       line-height: 28px;
       padding: 0 80px;
       margin: 30px 0;
+
+      @media (max-width: 767px) {
+        padding: 0;
+      }
     }
 
     .search-input {
@@ -148,8 +152,16 @@ import FooterComp from '@/components/home/FooterComp.vue'
       justify-content: space-between;
       padding: 80px 0;
 
+      @media (max-width: 767px) {
+        padding: 50px 0;
+      }
+
       .left {
         width: 65%;
+
+        @media (max-width: 1023px) {
+          width: 100%;
+        }
 
         .items {
           display: flex;
@@ -160,6 +172,9 @@ import FooterComp from '@/components/home/FooterComp.vue'
 
       .right {
         width: 32%;
+        height: fit-content;
+        position: sticky;
+        top: 30px;
 
         @media (max-width: 1023px) {
           display: none;

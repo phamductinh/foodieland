@@ -2,6 +2,9 @@
   <div class="details-recipe-container">
     <HomeHeader />
     <div class="content">
+      <div class="go-back">
+        <BtnGoBackComp />
+      </div>
       <div class="top">
         <div class="top-left">
           <h1>Health Japanese Fried Rice</h1>
@@ -145,6 +148,7 @@ import AdsComp from '@/components/AdsComp.vue'
 import SubscribeCardComp from '@/components/home/SubscribeCardComp.vue'
 import MoreRecipesComp from '@/components/home/MoreRecipesComp.vue'
 import FooterComp from '@/components/home/FooterComp.vue'
+import BtnGoBackComp from '@/components/BtnGoBackComp.vue'
 
 import { ref } from 'vue'
 
@@ -173,6 +177,11 @@ const toggleSauceCheck = (index: number) => {
 
     @media (max-width: 1023px) {
       padding: 30px;
+    }
+
+    .go-back {
+      margin-right: auto;
+      padding-bottom: 20px;
     }
 
     .top {
@@ -561,6 +570,9 @@ const toggleSauceCheck = (index: number) => {
 
       .right {
         width: 32%;
+        height: fit-content;
+        position: sticky;
+        top: 30px;
 
         @media (max-width: 1023px) {
           display: none;

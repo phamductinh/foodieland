@@ -12,6 +12,7 @@
       <RecipeCard
         v-for="(recipe, index) in recipes"
         :key="index"
+        :id="recipe.id"
         :image="recipe.image"
         :title="recipe.title"
         :time="recipe.time"
@@ -28,6 +29,7 @@ import { eventBus } from '@/utils/eventBus'
 import { ref, watchEffect } from 'vue'
 
 interface Recipe {
+  id: number
   image: string
   title: string
   time: string
@@ -45,6 +47,7 @@ watchEffect(() => {
       : ''
 
     recipes.value.push({
+      id: recipes.value.length + 1,
       image: imageUrl,
       title: formData.title,
       time: formData.time,
@@ -56,6 +59,7 @@ watchEffect(() => {
 
 const recipes = ref<Recipe[]>([
   {
+    id: 1,
     image: '/src/components/icons/banner.jpeg',
     title: 'Big and Juicy Wagyu Beef Cheeseburger',
     time: '30 minutes',
@@ -64,6 +68,7 @@ const recipes = ref<Recipe[]>([
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit, harum! Nobis ut a inventore sequi deserunt nam labore exercitationem quam! Alias culpa sequi earum? Iste quae maxime impedit debitis beatae?',
   },
   {
+    id: 2,
     image: '/src/components/icons/banner.jpeg',
     title: 'Big and Juicy Wagyu Beef Cheeseburger',
     time: '30 minutes',
@@ -72,6 +77,7 @@ const recipes = ref<Recipe[]>([
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit, harum! Nobis ut a inventore sequi deserunt nam labore exercitationem quam! Alias culpa sequi earum? Iste quae maxime impedit debitis beatae?',
   },
   {
+    id: 3,
     image: '/src/components/icons/banner.jpeg',
     title: 'Big and Juicy Wagyu Beef Cheeseburger',
     time: '30 minutes',
