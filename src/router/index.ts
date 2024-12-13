@@ -27,6 +27,11 @@ const routes = [
     component: () => import('@/views/DetailsBlog.vue'),
   },
   {
+    path: '/admin/users',
+    name: 'ManageUsers',
+    component: () => import('@/views/admin/ManageUsers.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: () => import('@/components/NotFound.vue'),
