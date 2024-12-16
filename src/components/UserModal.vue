@@ -8,33 +8,62 @@
 
       <form @submit.prevent="handleSubmit">
         <div class="form-group">
-          <label for="code">Code</label>
-          <input v-model="formData.code" type="text" id="code" required />
+          <label for="code">{{ $t('admin.code') }}</label>
+          <input
+            v-model="formData.code"
+            type="text"
+            id="code"
+            :disabled="!!props.itemToEdit"
+            :placeholder="$t('admin.code')"
+          />
+          <p v-if="errors.code" class="error-message">{{ $t('admin.' + errors.code) }}</p>
         </div>
 
         <div class="form-group">
-          <label for="image">Image</label>
-          <input @change="onImageChange" type="file" id="image" placeholder="Image URL" />
+          <label for="image">{{ $t('admin.image') }}</label>
+          <input @change="onImageChange" type="file" id="image" :placeholder="$t('admin.image')" />
+          <p v-if="errors.image" class="error-message">{{ $t('admin.' + errors.image) }}</p>
         </div>
 
         <div class="form-group">
-          <label for="name">Name</label>
-          <input v-model="formData.name" type="text" id="name" required />
+          <img class="img-preview" v-if="imagePreview" :src="imagePreview" alt="" />
         </div>
 
         <div class="form-group">
-          <label for="joiningDate">Joining Date</label>
-          <input v-model="formData.joiningDate" type="date" id="joiningDate" required />
+          <label for="name">{{ $t('admin.name') }}</label>
+          <input v-model="formData.name" type="text" id="name" :placeholder="$t('admin.name')" />
+          <p v-if="errors.name" class="error-message">{{ $t('admin.' + errors.name) }}</p>
         </div>
 
         <div class="form-group">
-          <label for="information">Information</label>
-          <textarea v-model="formData.information" id="information" rows="4"></textarea>
+          <label for="joiningDate">{{ $t('admin.joining-date') }}</label>
+          <input
+            v-model="formData.joiningDate"
+            type="date"
+            id="joiningDate"
+            :placeholder="$t('admin.joining-date')"
+          />
+          <p v-if="errors.joiningDate" class="error-message">
+            {{ $t('admin.' + errors.joiningDate) }}
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label for="information">{{ $t('admin.information') }}</label>
+          <textarea
+            v-model="formData.information"
+            id="information"
+            rows="4"
+            :placeholder="$t('admin.information')"
+          ></textarea>
+          <p v-if="errors.information" class="error-message">
+            {{ $t('admin.' + errors.information) }}
+          </p>
         </div>
 
         <div class="modal-footer">
-          <button type="button" @click="closeModal">Cancel</button>
-          <button type="submit">Save</button>
+          <button type="button" @click="closeModal">{{ $t('admin.cancel') }}</button>
+          <button type="submit">{{ $t('admin.save') }}</button>
         </div>
       </form>
     </div>
@@ -42,13 +71,17 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineProps, defineEmits, watch, reactive } from 'vue'
+import { ref, watch, reactive, type PropType } from 'vue'
 
-defineProps({
+const props = defineProps({
   isOpen: Boolean,
   modalTitle: {
     type: String,
     default: 'User Modal',
+  },
+  itemToEdit: {
+    type: Object as PropType<FormData | null>,
+    required: false,
   },
 })
 
@@ -57,7 +90,7 @@ interface FormData {
   name: string
   joiningDate: string
   information: string
-  image: File | null 
+  image: File | null | string
 }
 
 const formData = ref<FormData>({
@@ -84,6 +117,29 @@ watch(
   },
 )
 
+watch(
+  () => props.itemToEdit,
+  (newValue) => {
+    if (newValue) {
+      formData.value = { ...newValue }
+      if (newValue.image && typeof newValue.image === 'string') {
+        imagePreview.value = newValue.image
+      } else {
+        imagePreview.value = null
+      }
+    } else {
+      formData.value = {
+        code: '',
+        name: '',
+        image: null,
+        joiningDate: '',
+        information: '',
+      }
+    }
+  },
+  { immediate: true },
+)
+
 const onImageChange = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
 
@@ -101,12 +157,56 @@ const onImageChange = (event: Event) => {
   errors.image = ''
 }
 
+const resetForm = () => {
+  formData.value = {
+    code: '',
+    name: '',
+    joiningDate: '',
+    information: '',
+    image: null,
+  }
+  imagePreview.value = null
+  Object.keys(errors).forEach((key) => (errors[key as keyof FormData] = ''))
+}
+
 const closeModal = () => {
   emit('close')
+  resetForm()
 }
 
 const handleSubmit = () => {
+  const fields = [
+    { key: 'code', message: 'code-required' },
+    { key: 'name', message: 'name-required' },
+    { key: 'image', message: 'image-required' },
+    { key: 'joiningDate', message: 'joining-date-required' },
+    { key: 'information', message: 'information-required' },
+  ]
+
+  let hasError = false
+
+  for (const field of fields) {
+    const key = field.key as keyof FormData
+    const value =
+      typeof formData.value[key] === 'string'
+        ? (formData.value[key] as string).trim()
+        : formData.value[key]
+
+    if (!value) {
+      errors[key] = field.message
+      hasError = true
+    } else {
+      errors[key] = ''
+    }
+    formData.value[key] = value
+  }
+
+  if (hasError) {
+    return
+  }
+
   emit('save', formData.value)
+  resetForm()
   closeModal()
 }
 </script>
@@ -150,6 +250,19 @@ const handleSubmit = () => {
 
 .form-group {
   margin-bottom: 15px;
+
+  .img-preview {
+    height: 100px;
+    width: auto;
+  }
+
+  .error-message {
+    font-size: 12px;
+    font-style: italic;
+    color: red;
+    opacity: 0.8;
+    padding-top: 5px;
+  }
 }
 
 label {
@@ -168,6 +281,7 @@ textarea {
   outline: none;
   border-radius: 4px;
   font-size: 14px;
+  font-family: Inter;
 }
 
 textarea {
@@ -186,6 +300,7 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-family: Inter;
 }
 
 button[type='button'] {

@@ -1,0 +1,28 @@
+{
+  "admin": {
+    "manage-users": "Manage Users",
+    "advanced-search": "Advanced Search",
+    "employee-code": "Employee Code",
+    "employee-name": "Employee Name",
+    "joining-date": "Joining Date",
+    "code": "Code",
+    "name": "Name",
+    "image": "Image",
+    "information": "Information",
+    "delete": "Delete",
+    "edit": "Edit",
+    "modal-user": "Modal User",
+    "cancel": "Cancel",
+    "save": "Save",
+    "select-date-range": "Select Date Range",
+    "search": "Search",
+    "from": "From",
+    "to": "To",
+    "code-required": "Code is required.",
+    "name-required": "Name is required.",
+    "image-required": "Image is required.",
+    "joining-date-required": "Joining date is required.",
+    "information-required": "Information is required."
+  },
+  "date-format": "MM/DD/YYYY"
+}

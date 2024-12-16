@@ -1,0 +1,28 @@
+{
+  "admin": {
+    "manage-users": "Quản lý người dùng",
+    "advanced-search": "Tìm kiếm nâng cao",
+    "employee-code": "Mã nhân viên",
+    "employee-name": "Tên nhân viên",
+    "joining-date": "Ngày tham gia",
+    "code": "Mã nhân viên",
+    "name": "Tên",
+    "image": "Hình ảnh",
+    "information": "Thông tin",
+    "delete": "Xóa",
+    "edit": "Chỉnh sửa",
+    "modal-user": "Modal người dùng",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "select-date-range": "Chọn khoảng thời gian",
+    "search": "Tìm kiếm",
+    "from": "Từ",
+    "to": "Đến",
+    "code-required": "Mã nhân viên là bắt buộc.",
+    "name-required": "Tên là bắt buộc.",
+    "image-required": "Ảnh là bắt buộc.",
+    "joining-date-required": "Ngày gia nhập là bắt buộc.",
+    "information-required": "Thông tin là bắt buộc."
+  },
+  "date-format": "DD/MM/YYYY"
+}

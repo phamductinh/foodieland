@@ -6,7 +6,7 @@
           <th>
             <input type="checkbox" v-model="selectAll" @change="toggleSelectAll" />
           </th>
-          <th v-for="header in headers" :key="header">{{ header }}</th>
+          <th v-for="header in headers" :key="header">{{ $t('admin.' + header) }}</th>
         </tr>
       </thead>
       <tbody>
@@ -19,8 +19,15 @@
               @change="updateSelectedItems"
             />
           </td>
-          <td v-for="key in tableKeys" :key="key">
-            <template v-if="isImageKey(key, item[key])">
+          <td
+            v-for="key in tableKeys"
+            :key="key"
+            :class="{ 'image-cell': isImageKey(key, item[key]) }"
+          >
+            <template v-if="isDateKey(key, item[key])">
+              {{ formatDate(item[key], $t('date-format')) }}
+            </template>
+            <template v-else-if="isImageKey(key, item[key])">
               <img :src="item[key] as string" alt="Image" class="table-image" />
             </template>
             <template v-else>
@@ -34,7 +41,8 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, ref, watch } from 'vue'
+import moment from 'moment'
+import { ref, watch } from 'vue'
 
 interface Item {
   code: string
@@ -57,6 +65,17 @@ const isImageKey = (key: string, value: string | number | boolean | undefined): 
     )
   }
   return false
+}
+
+const isDateKey = (key: string, value: string | number | boolean | undefined): boolean => {
+  if (typeof value === 'string' && !isNaN(Date.parse(value))) {
+    return true
+  }
+  return false
+}
+
+const formatDate = (date: string, format: string): string => {
+  return moment(date).format(format)
 }
 
 const emit = defineEmits<{
@@ -87,6 +106,14 @@ watch(selectedItems, (newSelected) => {
     selectAll.value = false
   }
 })
+
+watch(
+  () => props.items,
+  () => {
+    selectedItems.value = []
+    emit('update:selectedItems', selectedItems.value)
+  },
+)
 </script>
 
 <style lang="scss" scoped>
@@ -98,6 +125,10 @@ table {
   text-align: left;
   font-family: Inter;
 
+  input[type='checkbox'] {
+    cursor: pointer;
+  }
+
   img {
     width: 40px;
     height: 40px;
@@ -106,13 +137,11 @@ table {
   }
 
   .image-cell {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+    width: 66px;
 
     img {
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       object-fit: cover;
       border-radius: 50%;
     }

@@ -1,15 +1,15 @@
 <template>
   <div class="manage-users-container">
     <div class="side-bar">
-      <h3>Advanced Search</h3>
+      <h3>{{ $t('admin.advanced-search') }}</h3>
       <hr />
       <nav>
         <ul>
           <li v-for="(item, index) in sidebarItems" :key="index" @click="openModal(item.key)">
-            <p>{{ item.title }}</p>
+            <p>{{ $t('admin.' + item.title) }}</p>
             <i class="fa-solid fa-chevron-right"></i>
           </li>
-          <div class="modal-search">
+          <div class="modal-search" ref="modalRef">
             <SearchModal
               :isVisible="isModalVisible"
               :title="modalTitle"
@@ -27,21 +27,26 @@
     </div>
     <div class="content">
       <div class="title">
-        <i class="fa-solid fa-user-group"></i>
-        <p>Manage Users</p>
+        <div class="left">
+          <i class="fa-solid fa-user-group"></i>
+          <p>{{ $t('admin.manage-users') }}</p>
+        </div>
+        <ChangeLanguage />
       </div>
 
       <div class="search-term">
         <p v-if="searchTermText">
-          Name: <span>{{ searchTermText }}</span>
+          {{ $t('admin.name') }}: <span>{{ searchTermText }}</span>
           <i class="fa-solid fa-xmark" @click="clearValue('text')"></i>
         </p>
         <p v-if="searchTermCode">
-          Code: <span>{{ searchTermCode }}</span>
+          {{ $t('admin.code') }}: <span>{{ searchTermCode }}</span>
           <i class="fa-solid fa-xmark" @click="clearValue('code')"></i>
         </p>
         <p v-if="searchTermStartDate && searchTermEndDate">
-          From: <span>{{ searchTermStartDate }}</span> To <span>{{ searchTermEndDate }}</span>
+          {{ $t('admin.from') }}: <span>{{ formatDate(searchTermStartDate) }}</span>
+          {{ $t('admin.to') }}
+          <span>{{ formatDate(searchTermEndDate) }}</span>
           <i class="fa-solid fa-xmark" @click="clearValue('range')"></i>
         </p>
       </div>
@@ -49,16 +54,26 @@
       <div class="btn-add-new">
         <button class="btn btn-more" @click="toggleActionsListOpen"><p>...</p></button>
         <button class="btn" @click="openUserModal"><i class="fa-solid fa-plus"></i></button>
-        <div v-show="isActionsListOpen" class="actions-list">
-          <button @click="handleDeleteSelectedItems" :disabled="itemsToDelete.length === 0">
-            Delete<i class="fa-solid fa-delete-left"></i>
+        <div v-show="isActionsListOpen" class="actions-list" ref="modalActionsRef">
+          <button @click="openDeleteModal" :disabled="itemsToDelete.length === 0">
+            {{ $t('admin.delete') }}<i class="fa-solid fa-delete-left"></i>
+          </button>
+          <button @click="handleOpenEditModal" :disabled="itemsToDelete.length !== 1">
+            {{ $t('admin.edit') }}<i class="fa-solid fa-pen-to-square"></i>
           </button>
         </div>
       </div>
 
+      <ConfirmDeleteModal
+        :isVisible="isModalDeleteVisible"
+        @confirm-delete="handleDeleteSelectedItems"
+        @close-modal="closeDeleteModal"
+      />
+
       <UserModal
         :isOpen="isModalOpen"
-        modalTitle="Modal User"
+        :modalTitle="$t('admin.modal-user')"
+        :itemToEdit="itemToEdit"
         @close="closeModal"
         @save="saveUserData"
       />
@@ -75,15 +90,24 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 import SearchModal from '@/components/SearchModal.vue'
 import TableComp from '@/components/TableComp.vue'
 import UserModal from '@/components/UserModal.vue'
+import ConfirmDeleteModal from '@/components/ConfirmDeleteModal.vue'
+import moment from 'moment'
+import ChangeLanguage from '@/components/ChangeLanguage.vue'
+
+const formatDate = (date: string): string => {
+  return moment(date).format('DD-MM-YYYY')
+}
 
 const isModalOpen = ref(false)
 const isActionsListOpen = ref(false)
+const modalRef = ref<HTMLElement | null>(null)
+const modalActionsRef = ref<HTMLElement | null>(null)
 
-const headers = ['Code', 'Name', 'Image', 'Joining Date', 'Information']
+const headers = ['code', 'name', 'image', 'joining-date', 'information']
 const tableKeys = ['code', 'name', 'image', 'joiningDate', 'information']
 
 interface SidebarItem {
@@ -92,9 +116,9 @@ interface SidebarItem {
 }
 
 const sidebarItems: SidebarItem[] = [
-  { key: 'code', title: 'Employee Code' },
-  { key: 'text', title: 'Employee Name' },
-  { key: 'range', title: 'Joining Date' },
+  { key: 'code', title: 'employee-code' },
+  { key: 'text', title: 'employee-name' },
+  { key: 'range', title: 'joining-date' },
 ]
 
 interface User {
@@ -110,40 +134,43 @@ const usersList = ref<User[]>([
     code: 'T007',
     name: 'Pham Duc Tinh',
     image: '/src/components/icons/contact-us.png',
-    joiningDate: '2017/03/01',
+    joiningDate: '2017-03-01',
     information: 'So fking good',
   },
   {
     code: 'T019',
     name: 'ThanhNC',
     image: '/src/components/icons/contact-us.png',
-    joiningDate: '2017/09/10',
+    joiningDate: '2017-09-10',
     information: 'ga',
   },
   {
     code: 'T032',
     name: 'Nguyen Minh Anh',
     image: '/src/components/icons/contact-us.png',
-    joiningDate: '2018/01/15',
+    joiningDate: '2018-01-15',
     information: 'Excellent worker',
   },
   {
     code: 'T045',
     name: 'Le Quang Hieu',
     image: '/src/components/icons/contact-us.png',
-    joiningDate: '2019/06/22',
+    joiningDate: '2019-06-22',
     information: 'Good performance',
   },
   {
     code: 'T051',
     name: 'Tran Thi Lan',
     image: '/src/components/icons/contact-us.png',
-    joiningDate: '2020/12/05',
+    joiningDate: '2020-12-05',
     information: 'Hard working',
   },
 ])
 
+const itemToEdit = ref<User | null>(null)
+
 const isModalVisible = ref(false)
+const isModalDeleteVisible = ref(false)
 const modalType = ref<'text' | 'range' | 'code'>('text')
 const modalTitle = ref('')
 interface RangeValue {
@@ -160,21 +187,35 @@ type SearchPayload = { searchText: string } | { searchCode: string } | { searchR
 
 const openModal = (type: 'text' | 'range' | 'code') => {
   modalType.value = type
-  modalTitle.value = type === 'text' ? 'Employee Name' : 'Select Date Range'
   if (type === 'text') {
-    modalTitle.value = 'Employee Name'
+    modalTitle.value = 'employee-name'
   }
   if (type === 'range') {
-    modalTitle.value = 'Select Date Range'
+    modalTitle.value = 'select-date-range'
   }
   if (type === 'code') {
-    modalTitle.value = 'Employee Code'
+    modalTitle.value = 'employee-code'
   }
-  isModalVisible.value = true
+  if (!isModalVisible.value) {
+    isModalVisible.value = true
+    setTimeout(() => {
+      document.addEventListener('click', handleOutsideClick)
+    }, 0)
+  } else {
+    handleModalCancel()
+  }
 }
 
 const toggleActionsListOpen = () => {
-  isActionsListOpen.value = !isActionsListOpen.value
+  if (!isActionsListOpen.value) {
+    isActionsListOpen.value = true
+    setTimeout(() => {
+      document.addEventListener('click', handleOutsideClick)
+    }, 0)
+  } else {
+    isActionsListOpen.value = false
+    document.removeEventListener('click', handleOutsideClick)
+  }
 }
 
 const handleModalSubmit = (payload: SearchPayload) => {
@@ -213,13 +254,27 @@ const filteredUsersList = computed(() => {
 
 const itemsToDelete = ref<string[]>([])
 
+const openDeleteModal = () => {
+  isModalDeleteVisible.value = true
+}
+
+const closeDeleteModal = () => {
+  isModalDeleteVisible.value = false
+}
+
 const handleDeleteSelectedItems = () => {
-  usersList.value = usersList.value.filter((user) => !itemsToDelete.value.includes(user.code))
-  itemsToDelete.value = []
+  if (itemsToDelete.value.length > 0) {
+    usersList.value = usersList.value.filter((user) => !itemsToDelete.value.includes(user.code))
+    itemsToDelete.value = []
+    handleSelectedItems([])
+    isActionsListOpen.value = false
+    isModalDeleteVisible.value = false
+  }
 }
 
 const handleModalCancel = () => {
   isModalVisible.value = false
+  document.removeEventListener('click', handleOutsideClick)
 }
 const clearValue = (type: 'text' | 'range' | 'code') => {
   if (type === 'text') {
@@ -234,8 +289,24 @@ const clearValue = (type: 'text' | 'range' | 'code') => {
   }
 }
 
+const handleOutsideClick = (event: MouseEvent) => {
+  const target = event.target as HTMLElement
+  if (modalRef.value && !modalRef.value.contains(target)) {
+    handleModalCancel()
+  }
+  if (modalActionsRef.value && !modalActionsRef.value.contains(target)) {
+    isActionsListOpen.value = false
+    document.removeEventListener('click', handleOutsideClick)
+  }
+}
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleOutsideClick)
+})
+
 const openUserModal = () => {
   isModalOpen.value = true
+  itemsToDelete.value = []
 }
 
 const closeModal = () => {
@@ -244,28 +315,51 @@ const closeModal = () => {
 
 const saveUserData = (data: User) => {
   if (data) {
-    console.log(data)
     const imageUrl: string =
-      data.image instanceof File
+      data.image && typeof data.image === 'object' && 'name' in data.image
         ? URL.createObjectURL(data.image)
         : typeof data.image === 'string'
           ? data.image
           : ''
 
-    usersList.value.push({
-      code: data.code,
-      image: imageUrl,
-      name: data.name,
-      joiningDate: data.joiningDate,
-      information: data.information,
-    })
+    if (itemToEdit.value) {
+      const index = usersList.value.findIndex((user) => user.code === data.code)
+      if (index !== -1) {
+        usersList.value[index] = {
+          ...usersList.value[index],
+          ...data,
+          image: imageUrl,
+        }
+      }
+    } else {
+      usersList.value.push({
+        code: data.code,
+        image: imageUrl,
+        name: data.name,
+        joiningDate: data.joiningDate,
+        information: data.information,
+      })
+    }
+    closeModal()
+    itemToEdit.value = null
   }
-  closeModal()
 }
 
 const handleSelectedItems = (selectedItems: string[]) => {
-  console.log('Selected items:', selectedItems)
   itemsToDelete.value = selectedItems
+  console.log(itemsToDelete.value)
+}
+
+const handleOpenEditModal = () => {
+  if (itemsToDelete.value.length === 1) {
+    isModalOpen.value = true
+    isActionsListOpen.value = false
+    const userCode = itemsToDelete.value[0]
+    const filteredUser = usersList.value.filter((user) => user.code === userCode)
+    if (itemsToDelete.value.length === 1) {
+      itemToEdit.value = filteredUser[0]
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -336,8 +430,13 @@ const handleSelectedItems = (selectedItems: string[]) => {
 
     .title {
       display: flex;
-      align-items: center;
-      gap: 15px;
+      justify-content: space-between;
+
+      .left {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
 
       i {
         font-size: 25px;
@@ -389,7 +488,7 @@ const handleSelectedItems = (selectedItems: string[]) => {
         box-shadow: 0 1px 4px hsla(0, 0%, 40%, 0.32);
         position: absolute;
         top: 130%;
-        right: 0;
+        right: 45px;
 
         button {
           display: flex;
@@ -401,9 +500,14 @@ const handleSelectedItems = (selectedItems: string[]) => {
           background: transparent;
           gap: 15px;
           cursor: pointer;
+          margin: 5px 0;
 
-          i {
+          .fa-delete-left {
             color: rgb(248, 34, 34);
+          }
+
+          .fa-pen-to-square {
+            color: #fdb415;
           }
 
           &:hover {

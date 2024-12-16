@@ -1,0 +1,28 @@
+{
+  "admin": {
+    "manage-users": "ユーザー管理",
+    "advanced-search": "高度な検索",
+    "employee-code": "社員コード",
+    "employee-name": "社員名",
+    "joining-date": "入社日",
+    "code": "コード",
+    "name": "名前",
+    "image": "画像",
+    "information": "情報",
+    "delete": "削除",
+    "edit": "編集",
+    "modal-user": "ユーザーモーダル",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "select-date-range": "日付範囲を選択",
+    "search": "検索",
+    "from": "から",
+    "to": "まで",
+    "code-required": "コードは必須です。",
+    "name-required": "名前は必須です。",
+    "image-required": "画像は必須です。",
+    "joining-date-required": "入社日は必須です。",
+    "information-required": "情報は必須です。"
+  },
+  "date-format": "YYYY/MM/DD"
+}

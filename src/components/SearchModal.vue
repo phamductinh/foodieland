@@ -1,24 +1,24 @@
 <template>
   <div class="modal" v-if="isVisible">
-    <h2 class="modal-title">{{ title }}</h2>
+    <h2 class="modal-title">{{ $t('admin.' + title) }}</h2>
     <div class="modal-content">
       <template v-if="type === 'text'">
-        <input v-model="textValue" type="text" class="input-text" placeholder="Name" />
+        <input v-model="textValue" type="text" class="input-text" :placeholder="$t('admin.name')" />
       </template>
       <template v-else-if="type === 'code'">
-        <input v-model="codeValue" type="text" class="input-text" placeholder="Code" />
+        <input v-model="codeValue" type="text" class="input-text" :placeholder="$t('admin.code')" />
       </template>
       <template v-else-if="type === 'range'">
         <div class="input-range">
           <input v-model="rangeValue.start" type="date" />
-          <span>to</span>
+          <span>{{ $t('admin.to') }}</span>
           <input v-model="rangeValue.end" type="date" />
         </div>
       </template>
     </div>
     <div class="modal-actions">
-      <button @click="closeModal" class="btn btn-cancel">Cancel</button>
-      <button @click="handleSubmit" class="btn btn-submit">Search</button>
+      <button @click="closeModal" class="btn btn-cancel">{{ $t('admin.cancel') }}</button>
+      <button @click="handleSubmit" class="btn btn-submit">{{ $t('admin.search') }}</button>
     </div>
     <i class="fa-solid fa-xmark" @click="closeModal"></i>
   </div>
@@ -156,12 +156,14 @@ const closeModal = () => {
       justify-content: space-between;
 
       input {
-        width: 45%;
+        width: 43%;
         padding: 0.5rem;
         font-size: 14px;
         border: 1px solid #ccc;
         border-radius: 4px;
         color: #333;
+        font-family: Inter;
+        outline: none;
       }
 
       span {
