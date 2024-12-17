@@ -16,6 +16,7 @@ const { locale } = useI18n()
 
 const changeLanguage = (lang: string) => {
   locale.value = lang
+  localStorage.setItem('language', lang)
 }
 </script>
 
@@ -23,7 +24,8 @@ const changeLanguage = (lang: string) => {
 .lang-btns {
   width: fit-content;
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 5px;
 
   button {
     cursor: pointer;
@@ -33,18 +35,14 @@ const changeLanguage = (lang: string) => {
     background: transparent;
     border: none;
     transition: all 0.3s ease;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 
     &:hover {
       transform: scale(1.05);
     }
 
     svg {
-      width: 25px;
-      height: 25px;
+      width: 20px;
+      height: 20px;
     }
   }
 }

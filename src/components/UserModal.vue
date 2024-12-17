@@ -1,6 +1,6 @@
 <template>
-  <div v-if="isOpen" class="modal-overlay">
-    <div class="modal">
+  <div v-if="isOpen" class="modal-overlay" @click="closeModal">
+    <div class="modal" @click.stop>
       <header class="modal-header">
         <h2>{{ modalTitle }}</h2>
         <button class="close-button" @click="closeModal">&times;</button>
@@ -37,11 +37,10 @@
 
         <div class="form-group">
           <label for="joiningDate">{{ $t('admin.joining-date') }}</label>
-          <input
-            v-model="formData.joiningDate"
-            type="date"
-            id="joiningDate"
-            :placeholder="$t('admin.joining-date')"
+          <DateChooser
+            :date="formData.joiningDate"
+            :placeholder="$t('date-format')"
+            @update:date="formData.joiningDate = $event"
           />
           <p v-if="errors.joiningDate" class="error-message">
             {{ $t('admin.' + errors.joiningDate) }}
@@ -72,6 +71,7 @@
 
 <script lang="ts" setup>
 import { ref, watch, reactive, type PropType } from 'vue'
+import DateChooser from '../components/DateChooser.vue'
 
 const props = defineProps({
   isOpen: Boolean,
@@ -105,7 +105,7 @@ const imagePreview = ref<string | null>(null)
 
 const errors = reactive({}) as Record<keyof FormData, string>
 
-const emit = defineEmits(['close', 'save'])
+const emit = defineEmits(['close', 'save', 'update:itemToEdit'])
 
 watch(
   () => formData.value.code,
@@ -172,6 +172,7 @@ const resetForm = () => {
 const closeModal = () => {
   emit('close')
   resetForm()
+  emit('update:itemToEdit', null)
 }
 
 const handleSubmit = () => {
@@ -211,7 +212,7 @@ const handleSubmit = () => {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -255,6 +256,37 @@ const handleSubmit = () => {
     height: 100px;
     width: auto;
   }
+
+  // .date-chooser {
+  //   position: relative;
+
+  //   .input-text {
+  //     position: absolute;
+  //     top: 0;
+  //     right: 0;
+  //     padding: 8px;
+  //     border: 1px solid #ddd;
+  //     outline: none;
+  //     border-radius: 4px;
+  //     font-size: 14px;
+  //     font-family: Inter;
+  //     z-index: 2;
+  //     cursor: pointer;
+  //   }
+
+  //   .input-date {
+  //     opacity: 0;
+  //   }
+
+  //   .fa-calendar-days {
+  //     position: absolute;
+  //     top: 10px;
+  //     right: 10px;
+  //     z-index: 2;
+  //     font-size: 14px;
+  //     color: #646464;
+  //   }
+  // }
 
   .error-message {
     font-size: 12px;

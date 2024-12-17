@@ -6,7 +6,16 @@
           <th>
             <input type="checkbox" v-model="selectAll" @change="toggleSelectAll" />
           </th>
-          <th v-for="header in headers" :key="header">{{ $t('admin.' + header) }}</th>
+          <th v-for="header in headers" :key="header" :class="{ 'image-col': header === 'image' }">
+            {{ $t('admin.' + header) }}
+            <button
+              v-if="header !== 'image' && header !== 'information'"
+              class="sort-btn"
+              @click="sortData(convertHeaderToKey(header))"
+            >
+              ⇅
+            </button>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -25,7 +34,7 @@
             :class="{ 'image-cell': isImageKey(key, item[key]) }"
           >
             <template v-if="isDateKey(key, item[key])">
-              {{ formatDate(item[key], $t('date-format')) }}
+              {{ typeof item[key] === 'string' ? formatDate(item[key], $t('date-format')) : '' }}
             </template>
             <template v-else-if="isImageKey(key, item[key])">
               <img :src="item[key] as string" alt="Image" class="table-image" />
@@ -80,6 +89,7 @@ const formatDate = (date: string, format: string): string => {
 
 const emit = defineEmits<{
   (event: 'update:selectedItems', value: string[]): void
+  (event: 'sort', key: string, order: string): void
 }>()
 
 const selectedItems = ref<string[]>([])
@@ -99,8 +109,42 @@ const updateSelectedItems = () => {
   emit('update:selectedItems', selectedItems.value)
 }
 
+const convertHeaderToKey = (header: string): string => {
+  return header
+    .split('-')
+    .map((word, index) => {
+      return index === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1)
+    })
+    .join('')
+}
+
+const sortState = ref<Record<string, 'asc' | 'desc' | null>>(
+  props.tableKeys.reduce(
+    (acc, header) => {
+      acc[header] = null
+      return acc
+    },
+    {} as Record<string, 'asc' | 'desc' | null>,
+  ),
+)
+
+const sortData = (key: string) => {
+  const currentOrder = sortState.value[key]
+  const newOrder = currentOrder === 'asc' ? 'desc' : 'asc'
+
+  sortState.value = Object.keys(sortState.value).reduce(
+    (acc, header) => {
+      acc[header] = header === key ? newOrder : null
+      return acc
+    },
+    {} as Record<string, 'asc' | 'desc' | null>,
+  )
+
+  emit('sort', key, newOrder)
+}
+
 watch(selectedItems, (newSelected) => {
-  if (newSelected.length === props.items.length) {
+  if (newSelected.length === props.items.length && newSelected.length > 0) {
     selectAll.value = true
   } else {
     selectAll.value = false
@@ -136,8 +180,8 @@ table {
     border-radius: 50%;
   }
 
-  .image-cell {
-    width: 66px;
+  .image-col {
+    width: 100px;
 
     img {
       width: 50px;
@@ -146,6 +190,25 @@ table {
       border-radius: 50%;
     }
   }
+
+  .sort-btn {
+    padding: 0;
+    margin-left: 5px;
+    cursor: pointer;
+    opacity: 0.5;
+    background: transparent;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .image-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .text-center {
     text-align: center;
   }

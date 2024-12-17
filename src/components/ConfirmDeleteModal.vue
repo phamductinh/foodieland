@@ -6,14 +6,18 @@
           <WarningIcon />
         </div>
         <div className="content">
-          <span className="title">Confirm delete</span>
+          <span className="title">{{ $t('admin.confirm-delete') }}</span>
           <p className="message">
-            Are you sure you want to delete this item? This action cannot be undone.
+            {{ $t('admin.confirm-delete-text') }}
           </p>
         </div>
         <div className="actions">
-          <button className="cancel" type="button" @click="closeModal">Cancel</button>
-          <button className="desactivate" type="button" @click="confirmDelete">Delete</button>
+          <button className="cancel" type="button" @click="closeModal">
+            {{ $t('admin.cancel') }}
+          </button>
+          <button className="desactivate" type="button" @click="confirmDelete">
+            {{ $t('admin.delete') }}
+          </button>
         </div>
       </div>
     </div>

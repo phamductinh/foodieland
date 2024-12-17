@@ -10,6 +10,8 @@
     "image": "画像",
     "information": "情報",
     "delete": "削除",
+    "confirm-delete": "削除を確認",
+    "confirm-delete-text": "このアイテムを削除してもよろしいですか? この操作は元に戻せません。",
     "edit": "編集",
     "modal-user": "ユーザーモーダル",
     "cancel": "キャンセル",

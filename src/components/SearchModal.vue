@@ -10,9 +10,17 @@
       </template>
       <template v-else-if="type === 'range'">
         <div class="input-range">
-          <input v-model="rangeValue.start" type="date" />
+          <DateChooser
+            :date="rangeValue.start"
+            :placeholder="$t('date-format')"
+            @update:date="rangeValue.start = $event"
+          />
           <span>{{ $t('admin.to') }}</span>
-          <input v-model="rangeValue.end" type="date" />
+          <DateChooser
+            :date="rangeValue.end"
+            :placeholder="$t('date-format')"
+            @update:date="rangeValue.end = $event"
+          />
         </div>
       </template>
     </div>
@@ -25,7 +33,8 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, defineEmits, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
+import DateChooser from './DateChooser.vue'
 
 interface RangeValue {
   start: string

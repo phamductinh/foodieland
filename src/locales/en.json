@@ -10,6 +10,8 @@
     "image": "Image",
     "information": "Information",
     "delete": "Delete",
+    "confirm-delete": "Confirm delete",
+    "confirm-delete-text": "Are you sure you want to delete this item? This action cannot be undone.",
     "edit": "Edit",
     "modal-user": "Modal User",
     "cancel": "Cancel",

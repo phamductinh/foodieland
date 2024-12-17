@@ -10,6 +10,8 @@
     "image": "Hình ảnh",
     "information": "Thông tin",
     "delete": "Xóa",
+    "confirm-delete": "Xác nhận xóa",
+    "confirm-delete-text": "Bạn có chắc chắn muốn xóa mục này không? Hành động này không thể hoàn tác.",
     "edit": "Chỉnh sửa",
     "modal-user": "Modal người dùng",
     "cancel": "Hủy",

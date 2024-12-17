@@ -76,13 +76,15 @@
         :itemToEdit="itemToEdit"
         @close="closeModal"
         @save="saveUserData"
+        @update:itemToEdit="itemToEdit = $event"
       />
 
       <div class="board">
         <TableComp
           :headers="headers"
-          :items="filteredUsersList"
+          :items="sortedItems"
           :tableKeys="tableKeys"
+          @sort="handleSort"
           @update:selectedItems="handleSelectedItems"
         />
       </div>
@@ -168,7 +170,6 @@ const usersList = ref<User[]>([
 ])
 
 const itemToEdit = ref<User | null>(null)
-
 const isModalVisible = ref(false)
 const isModalDeleteVisible = ref(false)
 const modalType = ref<'text' | 'range' | 'code'>('text')
@@ -232,8 +233,43 @@ const handleModalSubmit = (payload: SearchPayload) => {
   isModalVisible.value = false
 }
 
-const filteredUsersList = computed(() => {
-  return usersList.value.filter((user) => {
+// const filteredUsersList = computed(() => {
+//   return usersList.value.filter((user) => {
+//     const matchText = searchTermText.value
+//       ? user.name.toLowerCase().includes(searchTermText.value.toLowerCase())
+//       : true
+
+//     const matchCode = searchTermCode.value
+//       ? user.code.toLowerCase().includes(searchTermCode.value.toLowerCase())
+//       : true
+
+//     const matchDateRange =
+//       searchTermStartDate.value && searchTermEndDate.value
+//         ? new Date(user.joiningDate) >= new Date(searchTermStartDate.value) &&
+//           new Date(user.joiningDate) <= new Date(searchTermEndDate.value)
+//         : true
+
+//     return matchText && matchCode && matchDateRange
+//   })
+// })
+
+// const sortedItems = ref([...filteredUsersList.value])
+
+// const handleSort = (key: string, order: string) => {
+//   sortedItems.value = [...filteredUsersList.value].sort((a, b) => {
+//     if (order === 'asc') {
+//       return a[key] > b[key] ? 1 : -1
+//     } else {
+//       return a[key] < b[key] ? 1 : -1
+//     }
+//   })
+// }
+
+const sortKey = ref<string | null>(null)
+const sortOrder = ref<'asc' | 'desc'>('asc')
+
+const sortedItems = computed(() => {
+  const filtered = usersList.value.filter((user) => {
     const matchText = searchTermText.value
       ? user.name.toLowerCase().includes(searchTermText.value.toLowerCase())
       : true
@@ -250,7 +286,26 @@ const filteredUsersList = computed(() => {
 
     return matchText && matchCode && matchDateRange
   })
+
+  return filtered.sort((a, b) => {
+    if (!sortKey.value) return 0
+    if (sortOrder.value === 'asc') {
+      return a[sortKey.value] > b[sortKey.value] ? 1 : -1
+    } else {
+      return a[sortKey.value] < b[sortKey.value] ? 1 : -1
+    }
+  })
 })
+
+const handleSort = (key: string, order: string) => {
+  if (order === 'asc' || order === 'desc') {
+    sortKey.value = key
+    sortOrder.value = order
+  } else {
+    console.warn('Invalid sort order:', order)
+  }
+  console.log(key, order)
+}
 
 const itemsToDelete = ref<string[]>([])
 
@@ -276,6 +331,7 @@ const handleModalCancel = () => {
   isModalVisible.value = false
   document.removeEventListener('click', handleOutsideClick)
 }
+
 const clearValue = (type: 'text' | 'range' | 'code') => {
   if (type === 'text') {
     searchTermText.value = ''
@@ -347,7 +403,6 @@ const saveUserData = (data: User) => {
 
 const handleSelectedItems = (selectedItems: string[]) => {
   itemsToDelete.value = selectedItems
-  console.log(itemsToDelete.value)
 }
 
 const handleOpenEditModal = () => {
