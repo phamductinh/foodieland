@@ -32,6 +32,11 @@ const routes = [
     component: () => import('@/views/admin/ManageUsers.vue'),
   },
   {
+    path: '/admin/form',
+    name: 'Form',
+    component: () => import('@/views/admin/FormUser.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: () => import('@/components/NotFound.vue'),
