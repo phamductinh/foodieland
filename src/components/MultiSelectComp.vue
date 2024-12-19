@@ -1,9 +1,9 @@
 <template>
   <div class="multi-select">
     <p class="input-label"><span>Required</span>{{ top_label }}</p>
-    <div class="input-container">
-      <div class="selected-list">
-        <div v-for="item in selectedValues" :key="item.id" class="selected-item">
+    <div class="input-container" :class="{ 'input-error': error }">
+      <div class="selected-list" @click="toggleDropdown">
+        <div v-for="item in selectedValues" :key="item.id" class="multi-selected-item">
           {{ item.label }}
           <button @click="removeOption(item)"><i class="fa-solid fa-xmark"></i></button>
         </div>
@@ -12,8 +12,8 @@
           class="input-text"
           v-model="filter"
           :placeholder="placeholder"
+          :style="{ width: `${remainingWidth > 100 ? remainingWidth : 100}px` }"
           @input="onFilterChange"
-          @click="toggleDropdown"
         />
       </div>
       <button class="up-down" @click="toggleDropdown" type="button">
@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 
 interface Option {
   id: number | string
@@ -62,6 +62,47 @@ const emit = defineEmits(['update:modelValue'])
 const filter = ref('')
 const isDropdownOpen = ref(false)
 const selectedValues = ref<Option[]>([...props.modelValue])
+const remainingWidth = ref(0)
+
+const calculateRemainingWidth = () => {
+  const container = document.querySelector('.selected-list') as HTMLElement
+  const items = container?.querySelectorAll<HTMLElement>('.multi-selected-item')
+
+  if (container && items) {
+    let lastRowTop: number | null = null
+    let lastRowWidth = 0
+
+    items.forEach((item) => {
+      const { top, width } = item.getBoundingClientRect()
+
+      if (lastRowTop === null || top > lastRowTop) {
+        lastRowTop = top
+        lastRowWidth = width
+      } else {
+        lastRowWidth += width
+      }
+    })
+
+    remainingWidth.value = container.offsetWidth - lastRowWidth - 50
+
+    if (remainingWidth.value < 100) {
+      remainingWidth.value = container.offsetWidth
+    }
+  }
+}
+
+watch(selectedValues, () => {
+  nextTick(calculateRemainingWidth)
+})
+
+onMounted(() => {
+  calculateRemainingWidth()
+  window.addEventListener('resize', calculateRemainingWidth)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', calculateRemainingWidth)
+})
 
 const filteredOptions = computed(() =>
   props.options.filter((option) => option.label.toLowerCase().includes(filter.value.toLowerCase())),
@@ -77,7 +118,6 @@ const toggleDropdown = () => {
 
 const updateSelectedOptions = () => {
   emit('update:modelValue', selectedValues.value)
-  console.log(selectedValues.value)
 }
 
 const removeOption = (item: Option) => {
@@ -131,6 +171,7 @@ onBeforeUnmount(() => {
     span {
       display: inline-block;
       font-size: 12px;
+      line-height: 20px;
       font-weight: 600;
       text-align: center;
       padding: 0 5px;
@@ -159,10 +200,13 @@ onBeforeUnmount(() => {
     align-items: center;
     flex-wrap: wrap;
 
+    &.input-error {
+      border: 1px solid rgb(250, 105, 105);
+    }
+
     .input-text {
-      padding: 12px;
-      min-width: 200px;
-      flex-shrink: 0;
+      padding: 8px 12px;
+      // min-width: 200px;
       border: none;
       outline: none;
       border-radius: 4px;
@@ -180,7 +224,7 @@ onBeforeUnmount(() => {
       justify-content: center;
       position: absolute;
       right: 10px;
-      top: 14px;
+      top: 15px;
 
       i {
         font-size: 10px;
@@ -195,7 +239,7 @@ onBeforeUnmount(() => {
       flex-wrap: wrap;
       gap: 0.5rem;
 
-      .selected-item {
+      .multi-selected-item {
         background-color: #eeeeee;
         min-height: 25px;
         padding: 0.25rem 0.5rem;
@@ -203,6 +247,7 @@ onBeforeUnmount(() => {
         display: flex;
         align-items: center;
         font-size: 14px;
+        flex-shrink: 0;
 
         button {
           margin-left: 0.5rem;

@@ -3,23 +3,38 @@
     <p class="input-label"><span>Required</span>{{ top_label }}</p>
     <div class="picker-box">
       <div class="item">
-        <SingleSelectComp v-model="selectedDay" :options="days" placeholder="DD" />
+        <SingleSelectComp v-model="selectedDay" :options="days" placeholder="DD" :error="error" />
         <p>Day</p>
       </div>
       <div class="item">
-        <SingleSelectComp :options="months" v-model="selectedMonth" placeholder="MM" />
+        <SingleSelectComp
+          :options="months"
+          v-model="selectedMonth"
+          placeholder="MM"
+          :error="error"
+        />
         <p>Month</p>
       </div>
       <div class="item">
-        <SingleSelectComp :options="years" v-model="selectedYear" placeholder="YYYY" />
+        <SingleSelectComp
+          :options="years"
+          v-model="selectedYear"
+          placeholder="YYYY"
+          :error="error"
+        />
         <p>Year</p>
       </div>
       <div class="item" v-if="isShowTime">
-        <SingleSelectComp :options="hours" v-model="selectedHour" placeholder="HH" />
+        <SingleSelectComp :options="hours" v-model="selectedHour" placeholder="HH" :error="error" />
         <p>h.</p>
       </div>
       <div class="item" v-if="isShowTime">
-        <SingleSelectComp :options="minutes" v-model="selectedMinute" placeholder="mm" />
+        <SingleSelectComp
+          :options="minutes"
+          v-model="selectedMinute"
+          placeholder="mm"
+          :error="error"
+        />
         <p>min.</p>
       </div>
     </div>
@@ -55,7 +70,6 @@ const selectedMonth = ref('')
 const selectedYear = ref('')
 const selectedHour = ref('')
 const selectedMinute = ref('')
-
 const currentDate = new Date()
 
 nextTick(() => {
@@ -91,6 +105,15 @@ watch([selectedDay, selectedMonth, selectedYear, selectedHour, selectedMinute], 
       : `${selectedYear.value}-${selectedMonth.value.padStart(2, '0')}-${selectedDay.value.padStart(2, '0')}`
 
     emit('update:datetime', datetime)
+  }
+})
+
+watch([selectedMonth, selectedYear], () => {
+  if (selectedMonth.value && selectedYear.value) {
+    const daysInMonth = getDaysInMonth(Number(selectedYear.value), Number(selectedMonth.value))
+    if (!daysInMonth.includes(selectedDay.value)) {
+      selectedDay.value = daysInMonth[daysInMonth.length - 1]
+    }
   }
 })
 

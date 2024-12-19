@@ -35,7 +35,7 @@ const goBackHome = () => {
 
 const listItemsHeader = [
   { name: 'Home', path: '/' },
-  { name: 'Recipes', path: '/recipes' },
+  { name: 'Recipes', path: '/admin/form' },
   { name: 'Blog', path: '/blog' },
   { name: 'Contact', path: '/contact' },
   { name: 'About us', path: '/aboutus' },

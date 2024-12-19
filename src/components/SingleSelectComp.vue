@@ -7,19 +7,22 @@
           v-model="inputValue"
           :placeholder="placeholder"
           readonly
-          @focus="isOpen = true"
+          @focus="openDropdown"
           @blur="closeDropdown"
+          @mousedown="openDropdown"
+          :class="{ 'input-error': error }"
         />
         <i class="fa-solid fa-chevron-up" v-if="isOpen"></i>
         <i class="fa-solid fa-chevron-down" v-else></i>
       </div>
+
       <div v-if="isOpen" class="dropdown-list">
         <div
           class="dropdown-item"
+          :class="{ 'selected-item selected': inputValue === item }"
           v-for="(item, index) in options"
           :key="index"
           @click="selectItem(item)"
-          :ref="item === inputValue ? 'selectedItem' : ''"
         >
           {{ item }}
         </div>
@@ -29,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, defineEmits, ref, watch, type PropType } from 'vue'
+import { defineProps, defineEmits, ref, watch, type PropType, nextTick } from 'vue'
 
 const props = defineProps({
   options: {
@@ -44,6 +47,7 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  error: String,
 })
 
 const emit = defineEmits<{
@@ -53,13 +57,13 @@ const emit = defineEmits<{
 const selectedValue = ref(props.modelValue)
 const inputValue = ref(props.modelValue.toString())
 const isOpen = ref(false)
-const selectedItemRef = ref<HTMLElement | null>(null)
 
 const selectItem = (item: number | string) => {
   selectedValue.value = item
   inputValue.value = item.toString()
   emit('update:modelValue', item)
   isOpen.value = false
+  nextTick(() => {})
 }
 
 watch(
@@ -69,23 +73,34 @@ watch(
   },
 )
 
-const closeDropdown = () => {
-  setTimeout(() => {
-    isOpen.value = false
-  }, 100)
-}
-
-watch(isOpen, (newVal) => {
-  if (newVal && selectedItemRef.value) {
-    selectedItemRef.value.scrollIntoView({
-      behavior: 'smooth',
+const openDropdown = async () => {
+  isOpen.value = true
+  await nextTick()
+  const selectedItem = document.querySelector('.selected-item') as HTMLElement
+  if (selectedItem && isOpen.value === true) {
+    selectedItem.scrollIntoView({
       block: 'center',
     })
   }
-})
+  setTimeout(() => {
+    if (selectedItem) {
+      selectedItem.classList.remove('selected-item')
+    }
+  }, 200)
+}
+
+const closeDropdown = () => {
+  setTimeout(() => {
+    isOpen.value = false
+    const selectedItem = document.querySelector('.selected-item') as HTMLElement
+    if (selectedItem) {
+      selectedItem.classList.remove('selected-item')
+    }
+  }, 100)
+}
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .custom-select {
   position: relative;
   width: auto;
@@ -103,6 +118,10 @@ watch(isOpen, (newVal) => {
       font-family: Inter;
       font-weight: 400;
       cursor: pointer;
+
+      &.input-error {
+        border: 1px solid rgb(250, 105, 105);
+      }
     }
 
     i {
@@ -151,6 +170,10 @@ watch(isOpen, (newVal) => {
     &:hover {
       background-color: #f0f0f0;
     }
+  }
+
+  .selected {
+    background: #e9e9e9;
   }
 }
 </style>

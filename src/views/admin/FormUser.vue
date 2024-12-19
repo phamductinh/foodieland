@@ -1,4 +1,5 @@
 <template>
+  <HomeHeader />
   <div class="form-container">
     <form @submit.prevent="handleSubmit">
       <MultiSelectComp
@@ -18,7 +19,9 @@
       <div class="input-box">
         <p class="input-label"><span>Required</span>Work:</p>
         <div class="box">
-          <label for="online"
+          <label
+            for="online"
+            :class="{ 'is-checked': workType === 'Online', 'input-error': formErrors.workType }"
             ><input
               type="radio"
               name="work"
@@ -27,7 +30,9 @@
               v-model="workType"
             />Online</label
           >
-          <label for="offline"
+          <label
+            for="offline"
+            :class="{ 'is-checked': workType === 'Offline', 'input-error': formErrors.workType }"
             ><input
               type="radio"
               name="work"
@@ -41,7 +46,13 @@
       </div>
       <div class="input-box">
         <p class="input-label"><span>Required</span>URL:</p>
-        <input class="input-url" type="text" placeholder="Social URL" v-model="socialURL" />
+        <input
+          class="input-url"
+          type="text"
+          placeholder="Social URL"
+          v-model="socialURL"
+          :class="{ 'input-error': formErrors.socialURL }"
+        />
         <p v-if="formErrors.socialURL" class="error-msg">{{ formErrors.socialURL }}</p>
       </div>
       <div class="btns">
@@ -63,6 +74,7 @@ import MultiSelectComp from '@/components/MultiSelectComp.vue'
 import DatePickerComp from '@/components/DatePickerComp.vue'
 import UserModal from './UserModal.vue'
 import { reactive, ref, watch } from 'vue'
+import HomeHeader from '@/components/home/HomeHeader.vue'
 
 const strengths = ref([
   { id: 1, label: 'Problem Solving' },
@@ -73,6 +85,28 @@ const strengths = ref([
   { id: 6, label: 'Database Management' },
   { id: 7, label: 'Team Collaboration' },
   { id: 8, label: 'Critical Thinking' },
+  { id: 9, label: 'Data Analysis' },
+  { id: 10, label: 'Project Management' },
+  { id: 11, label: 'Communication Skills' },
+  { id: 12, label: 'Artificial Intelligence' },
+  { id: 13, label: 'Machine Learning' },
+  { id: 14, label: 'DevOps' },
+  { id: 15, label: 'Networking' },
+  { id: 16, label: 'UI/UX Design' },
+  { id: 17, label: 'Web Development' },
+  { id: 18, label: 'Mobile App Development' },
+  { id: 19, label: 'Leadership' },
+  { id: 20, label: 'Time Management' },
+  { id: 21, label: 'Agile Methodology' },
+  { id: 22, label: 'Quality Assurance' },
+  { id: 23, label: 'Technical Writing' },
+  { id: 24, label: 'Big Data' },
+  { id: 25, label: 'Blockchain' },
+  { id: 26, label: 'Digital Marketing' },
+  { id: 27, label: 'SEO Optimization' },
+  { id: 28, label: 'Customer Relationship Management' },
+  { id: 29, label: 'Emotional Intelligence' },
+  { id: 30, label: 'Conflict Resolution' },
 ])
 
 const selectedOptions = ref([])
@@ -121,7 +155,6 @@ watch(socialURL, (newValue) => {
 
 const handleDatetimeUpdate = (datetime: string) => {
   selectedDateTime.value = datetime
-  console.log(selectedDateTime.value)
 }
 
 const validateForm = () => {
@@ -138,7 +171,13 @@ const validateForm = () => {
     formErrors.selectedDateTime = 'Joining date is required.'
     isValid = false
   } else {
-    formErrors.selectedDateTime = ''
+    const date = new Date(selectedDateTime.value)
+    if (isNaN(date.getTime())) {
+      formErrors.selectedDateTime = 'Invalid date.'
+      isValid = false
+    } else {
+      formErrors.selectedDateTime = ''
+    }
   }
 
   if (!workType.value) {
@@ -251,6 +290,19 @@ const resetForm = () => {
           font-weight: 400;
           line-height: 24px;
           color: #666;
+
+          &.input-error {
+            border: 1px solid rgb(250, 105, 105);
+          }
+
+          input {
+            cursor: pointer;
+          }
+        }
+
+        .is-checked {
+          border: 1px solid #779abd;
+          color: #627d98;
         }
       }
 
@@ -263,6 +315,10 @@ const resetForm = () => {
         font-size: 13px;
         font-family: Inter;
         font-weight: 400;
+
+        &.input-error {
+          border: 1px solid rgb(250, 105, 105);
+        }
       }
     }
 
@@ -281,6 +337,10 @@ const resetForm = () => {
         border: none;
         border-radius: 4px;
         cursor: pointer;
+
+        &:hover {
+          background: #779abd;
+        }
       }
 
       .btn-cancel {
@@ -292,6 +352,10 @@ const resetForm = () => {
         border: none;
         border-radius: 4px;
         cursor: pointer;
+
+        &:hover {
+          background: #a1a1a1;
+        }
       }
     }
   }
