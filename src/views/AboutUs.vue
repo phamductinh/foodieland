@@ -2,7 +2,7 @@
   <HomeHeader />
   <div class="about-us-container">
     <h1>About Us</h1>
-    <div class="content">
+    <div class="content" v-if="aboutUsData">
       <div class="strengths">
         <p>Strengths:</p>
         <div class="item" v-for="(item, index) in aboutUsData.strengths" :key="index">
@@ -11,12 +11,12 @@
       </div>
       <div class="work">
         <p>
-          Joining Date: <span>{{ aboutUsData.joiningDate }}</span>
+          Joining Date: <span>{{ formatDate(aboutUsData.joiningDate, 'MM/DD/YYYY HH:mm') }}</span>
         </p>
       </div>
       <div class="work">
         <p>
-          Work: <span>{{ aboutUsData.workType }}</span>
+          Work: <span>{{ aboutUsData.isWorkType === true ? 'Online' : 'Offline' }}</span>
         </p>
       </div>
       <div class="work">
@@ -33,6 +33,7 @@ import HomeHeader from '@/components/home/HomeHeader.vue'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import FooterComp from '@/components/home/FooterComp.vue'
+import moment from 'moment'
 
 const store = useStore()
 
@@ -41,7 +42,13 @@ const aboutUsData = computed(() => {
   return data ? JSON.parse(data) : null
 })
 
-console.log(aboutUsData.value)
+const formatDate = (date: string, format: string = 'MM/DD/YYYY'): string => {
+  if (date && format) {
+    return moment(date).format(format)
+  } else {
+    return ''
+  }
+}
 </script>
 <style lang="scss">
 .about-us-container {

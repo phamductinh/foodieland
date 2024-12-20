@@ -1,10 +1,13 @@
 <template>
   <div class="date-picker-container">
-    <p class="input-label"><span>Required</span>{{ top_label }}</p>
+    <p class="input-label">
+      <span>{{ $t('admin.required') }}</span
+      >{{ top_label }}
+    </p>
     <div class="picker-box">
       <div class="item">
         <SingleSelectComp v-model="selectedDay" :options="days" placeholder="DD" :error="error" />
-        <p>Day</p>
+        <p>{{ $t('admin.day') }}</p>
       </div>
       <div class="item">
         <SingleSelectComp
@@ -13,7 +16,7 @@
           placeholder="MM"
           :error="error"
         />
-        <p>Month</p>
+        <p>{{ $t('admin.month') }}</p>
       </div>
       <div class="item">
         <SingleSelectComp
@@ -22,11 +25,11 @@
           placeholder="YYYY"
           :error="error"
         />
-        <p>Year</p>
+        <p>{{ $t('admin.year') }}</p>
       </div>
       <div class="item" v-if="isShowTime">
         <SingleSelectComp :options="hours" v-model="selectedHour" placeholder="HH" :error="error" />
-        <p>h.</p>
+        <p>{{ $t('admin.h') }}</p>
       </div>
       <div class="item" v-if="isShowTime">
         <SingleSelectComp
@@ -35,7 +38,7 @@
           placeholder="mm"
           :error="error"
         />
-        <p>min.</p>
+        <p>{{ $t('admin.min') }}</p>
       </div>
     </div>
     <p v-if="error" class="error-message">{{ error }}</p>
@@ -51,6 +54,7 @@ const props = defineProps<{
   isShowTime?: boolean
   error?: string
   resetTrigger?: boolean
+  defaultDateTime?: string
 }>()
 
 const isShowTime = props.isShowTime ?? false
@@ -73,11 +77,16 @@ const selectedMinute = ref('')
 const currentDate = new Date()
 
 nextTick(() => {
-  selectedDay.value = currentDate.getDate().toString()
-  selectedMonth.value = (currentDate.getMonth() + 1).toString()
-  selectedYear.value = currentDate.getFullYear().toString()
-  selectedHour.value = currentDate.getHours().toString().padStart(2, '0')
-  selectedMinute.value = currentDate.getMinutes().toString().padStart(2, '0')
+  const defaultDate = props.defaultDateTime ? new Date(props.defaultDateTime) : currentDate
+
+  selectedDay.value = defaultDate.getDate().toString()
+  selectedMonth.value = (defaultDate.getMonth() + 1).toString()
+  selectedYear.value = defaultDate.getFullYear().toString()
+
+  if (isShowTime) {
+    selectedHour.value = defaultDate.getHours().toString().padStart(2, '0')
+    selectedMinute.value = defaultDate.getMinutes().toString().padStart(2, '0')
+  }
 })
 
 const getDaysInMonth = (year: number, month: number): string[] => {

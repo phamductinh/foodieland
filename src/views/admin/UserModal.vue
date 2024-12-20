@@ -4,8 +4,11 @@
       <h2>{{ title }}</h2>
       <div class="modal-body">
         <p><strong>Strengths:</strong> {{ data.strengths.map((s) => s.label).join(', ') }}</p>
-        <p><strong>Joining Date:</strong> {{ data.joiningDate }}</p>
-        <p><strong>Work Type:</strong> {{ data.workType }}</p>
+        <p>
+          <strong>Joining Date:</strong>
+          {{ formatDate(data.joiningDate, 'MM/DD/YYYY HH:mm') }}
+        </p>
+        <p><strong>Work Type:</strong> {{ data.isWorkType === true ? 'Online' : 'Offline' }}</p>
         <p><strong>Social URL:</strong> {{ data.socialURL }}</p>
       </div>
       <div class="btns">
@@ -17,6 +20,7 @@
 </template>
 
 <script lang="ts" setup>
+import moment from 'moment'
 import { defineProps } from 'vue'
 import { useStore } from 'vuex'
 
@@ -47,14 +51,21 @@ const emitClose = () => {
 
 const handleSubmit = () => {
   if (data) {
-    store.dispatch('updateAboutUsData', data).then(() => {
-      emitClose()
-    })
+    store.commit('setAboutUsData', data)
+    emitClose()
+  }
+}
+
+const formatDate = (date: string, format: string = 'MM/DD/YYYY'): string => {
+  if (date && format) {
+    return moment(date).format(format)
+  } else {
+    return ''
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .modal {
   position: fixed;
   top: 0;

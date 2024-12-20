@@ -24,7 +24,22 @@
     "name-required": "Name is required.",
     "image-required": "Image is required.",
     "joining-date-required": "Joining date is required.",
-    "information-required": "Information is required."
+    "information-required": "Information is required.",
+    "strengths": "Strengths",
+    "select-options": "Select options...",
+    "required": "Required",
+    "work": "Work",
+    "online": "Online",
+    "offline": "Offline",
+    "social-url": "Social URL",
+    "submit": "Submit",
+    "day": "Day",
+    "month": "Month",
+    "year": "Year",
+    "h": "h.",
+    "min": "min.",
+    "users": "Users",
+    "list-users": "Modal List Users"
   },
   "date-format": "MM/DD/YYYY"
 }

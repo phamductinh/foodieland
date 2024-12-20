@@ -1,10 +1,18 @@
 <template>
   <div class="multi-select">
-    <p class="input-label"><span>Required</span>{{ top_label }}</p>
+    <p class="input-label">
+      <span v-show="!isChooseUser">{{ $t('admin.required') }}</span
+      >{{ top_label }}
+    </p>
     <div class="input-container" :class="{ 'input-error': error }">
       <div class="selected-list" @click="toggleDropdown">
-        <div v-for="item in selectedValues" :key="item.id" class="multi-selected-item">
-          {{ item.label }}
+        <div
+          v-show="!isChooseUser"
+          v-for="item in selectedValues"
+          :key="item.id"
+          class="multi-selected-item"
+        >
+          {{ item.label || item.name }}
           <button @click="removeOption(item)"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <input
@@ -33,10 +41,21 @@
               v-model="selectedValues"
               @change="updateSelectedOptions"
             />
-            {{ option.label }}
+            {{ option.label || option.name }}
           </label>
         </li>
       </ul>
+    </div>
+  </div>
+  <div class="selected-users-box">
+    <div
+      v-show="isChooseUser"
+      v-for="item in selectedValues"
+      :key="item.code"
+      class="multi-selected-item"
+    >
+      {{ item.label || item.name }}
+      <button @click="removeOption(item)"><i class="fa-solid fa-xmark"></i></button>
     </div>
   </div>
 </template>
@@ -45,8 +64,13 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 
 interface Option {
-  id: number | string
-  label: string
+  id?: number | string
+  label?: string
+  code?: string
+  name?: string
+  image?: string
+  joiningDate?: string
+  information?: string
 }
 
 const props = defineProps<{
@@ -54,8 +78,11 @@ const props = defineProps<{
   modelValue: Option[]
   placeholder?: string
   top_label?: string
+  isChooseUser?: boolean
   error?: string
 }>()
+
+const isChooseUser = computed(() => props.isChooseUser ?? false)
 
 const emit = defineEmits(['update:modelValue'])
 
@@ -105,7 +132,11 @@ onBeforeUnmount(() => {
 })
 
 const filteredOptions = computed(() =>
-  props.options.filter((option) => option.label.toLowerCase().includes(filter.value.toLowerCase())),
+  props.options.filter(
+    (option) =>
+      (option.label && option.label.toLowerCase().includes(filter.value.toLowerCase())) ||
+      (option.name && option.name.toLowerCase().includes(filter.value.toLowerCase())),
+  ),
 )
 
 const onFilterChange = () => {
@@ -121,7 +152,11 @@ const updateSelectedOptions = () => {
 }
 
 const removeOption = (item: Option) => {
-  selectedValues.value = selectedValues.value.filter((selected) => selected.id !== item.id)
+  if (isChooseUser.value) {
+    selectedValues.value = selectedValues.value.filter((selected) => selected.code !== item.code)
+  } else {
+    selectedValues.value = selectedValues.value.filter((selected) => selected.id !== item.id)
+  }
   updateSelectedOptions()
 }
 
@@ -308,6 +343,29 @@ onBeforeUnmount(() => {
         }
       }
     }
+  }
+}
+.selected-users-box {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #dcdcdc;
+  margin-top: 20px;
+  border-radius: 3px;
+  max-height: 200px;
+  min-height: 100px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgb(201, 201, 201);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
   }
 }
 </style>

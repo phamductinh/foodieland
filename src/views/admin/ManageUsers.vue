@@ -54,6 +54,10 @@
       <div class="btn-add-new">
         <button class="btn btn-more" @click="toggleActionsListOpen"><p>...</p></button>
         <button class="btn" @click="openUserModal"><i class="fa-solid fa-plus"></i></button>
+        <button class="btn-users" @click="openUsersListModal">
+          {{ $t('admin.users') }}
+          <p>{{ listUsersLength }}</p>
+        </button>
         <div v-show="isActionsListOpen" class="actions-list" ref="modalActionsRef">
           <button @click="openDeleteModal" :disabled="itemsToDelete.length === 0">
             {{ $t('admin.delete') }}<i class="fa-solid fa-delete-left"></i>
@@ -79,6 +83,13 @@
         @update:itemToEdit="itemToEdit = $event"
       />
 
+      <UsersListModal
+        :isOpen="isModalUsersListOpen"
+        :modalTitle="$t('admin.list-users')"
+        @close="isModalUsersListOpen = false"
+        @submit="addListUsers"
+      />
+
       <div class="board">
         <TableComp
           :headers="headers"
@@ -96,6 +107,7 @@ import { computed, onBeforeUnmount, ref } from 'vue'
 import SearchModal from '@/components/SearchModal.vue'
 import TableComp from '@/components/TableComp.vue'
 import UserModal from '@/components/UserModal.vue'
+import UsersListModal from './UsersListModal.vue'
 import ConfirmDeleteModal from '@/components/ConfirmDeleteModal.vue'
 import moment from 'moment'
 import ChangeLanguage from '@/components/ChangeLanguage.vue'
@@ -105,6 +117,7 @@ const formatDate = (date: string): string => {
 }
 
 const isModalOpen = ref(false)
+const isModalUsersListOpen = ref(false)
 const isActionsListOpen = ref(false)
 const modalRef = ref<HTMLElement | null>(null)
 const modalActionsRef = ref<HTMLElement | null>(null)
@@ -183,6 +196,7 @@ const searchTermText = ref('')
 const searchTermCode = ref('')
 const searchTermStartDate = ref('')
 const searchTermEndDate = ref('')
+const listUsersLength = ref(0)
 
 type SearchPayload = { searchText: string } | { searchCode: string } | { searchRange: RangeValue }
 
@@ -204,6 +218,12 @@ const openModal = (type: 'text' | 'range' | 'code') => {
     }, 0)
   } else {
     handleModalCancel()
+  }
+}
+
+const openUsersListModal = () => {
+  if (!isModalUsersListOpen.value) {
+    isModalUsersListOpen.value = true
   }
 }
 
@@ -401,6 +421,17 @@ const saveUserData = (data: User) => {
   }
 }
 
+const addListUsers = (data: User[]) => {
+  if (data) {
+    const existingCodes = new Set(usersList.value.map((user) => user.code))
+    const filteredData = data.filter((user) => !existingCodes.has(user.code))
+
+    usersList.value = [...usersList.value, ...filteredData]
+    isModalUsersListOpen.value = false
+    listUsersLength.value = data.length
+  }
+}
+
 const handleSelectedItems = (selectedItems: string[]) => {
   itemsToDelete.value = selectedItems
 }
@@ -531,6 +562,7 @@ const handleOpenEditModal = () => {
     .btn-add-new {
       display: flex;
       justify-content: flex-end;
+      align-items: center;
       gap: 15px;
       position: relative;
 
@@ -592,6 +624,22 @@ const handleOpenEditModal = () => {
 
         p {
           padding-bottom: 8px;
+        }
+      }
+
+      .btn-users {
+        border: 1px solid #dbdbdb;
+        border-radius: 5px;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        p {
+          padding: 3px;
+          background: #52606d;
+          color: #fff;
+          border-radius: 4px;
         }
       }
     }

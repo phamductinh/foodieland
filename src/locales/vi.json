@@ -24,7 +24,22 @@
     "name-required": "Tên là bắt buộc.",
     "image-required": "Ảnh là bắt buộc.",
     "joining-date-required": "Ngày gia nhập là bắt buộc.",
-    "information-required": "Thông tin là bắt buộc."
+    "information-required": "Thông tin là bắt buộc.",
+    "strengths": "Thế mạnh",
+    "select-options": "Chọn...",
+    "required": "Bắt buộc",
+    "work": "Công việc",
+    "online": "Trực tuyến",
+    "offline": "Ngoại tuyến",
+    "social-url": "URL mạng xã hội",
+    "submit": "Gửi",
+    "day": "Ngày",
+    "month": "Tháng",
+    "year": "Năm",
+    "h": "Giờ",
+    "min": "Phút",
+    "users": "Người dùng",
+    "list-users": "Danh sách người dùng"
   },
   "date-format": "DD/MM/YYYY"
 }

@@ -13,7 +13,7 @@
           :class="{ 'input-error': error }"
         />
         <i class="fa-solid fa-chevron-up" v-if="isOpen"></i>
-        <i class="fa-solid fa-chevron-down" v-else></i>
+        <i class="fa-solid fa-chevron-down" v-else @mousedown.prevent="openDropdown"></i>
       </div>
 
       <div v-if="isOpen" class="dropdown-list">
@@ -22,7 +22,8 @@
           :class="{ 'selected-item selected': inputValue === item }"
           v-for="(item, index) in options"
           :key="index"
-          @click="selectItem(item)"
+          tabindex="0"
+          @mousedown.prevent="selectItem(item)"
         >
           {{ item }}
         </div>

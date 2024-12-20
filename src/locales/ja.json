@@ -24,7 +24,22 @@
     "name-required": "名前は必須です。",
     "image-required": "画像は必須です。",
     "joining-date-required": "入社日は必須です。",
-    "information-required": "情報は必須です。"
+    "information-required": "情報は必須です。",
+    "strengths": "強み",
+    "select-options": "オプションを選択...",
+    "required": "必須",
+    "work": "仕事",
+    "online": "オンライン",
+    "offline": "オフライン",
+    "social-url": "ソーシャルURL",
+    "submit": "送信",
+    "day": "日",
+    "month": "月",
+    "year": "年",
+    "h": "時",
+    "min": "分",
+    "users": "ユーザー",
+    "list-users": "ユーザー一覧"
   },
   "date-format": "YYYY/MM/DD"
 }

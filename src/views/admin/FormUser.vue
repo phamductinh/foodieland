@@ -3,61 +3,62 @@
   <div class="form-container">
     <form @submit.prevent="handleSubmit">
       <MultiSelectComp
-        top_label="Strengths:"
+        :top_label="$t('admin.strengths')"
         :options="strengths"
         v-model="selectedOptions"
-        placeholder="Select options..."
+        :placeholder="$t('admin.select-options')"
         :error="formErrors.selectedOptions"
       />
       <DatePickerComp
         @update:datetime="handleDatetimeUpdate"
-        top_label="Joining Date:"
+        :top_label="$t('admin.joining-date')"
         :isShowTime="true"
+        :defaultDateTime="selectedDateTime"
         :error="formErrors.selectedDateTime"
         :resetTrigger="resetFormTrigger"
       />
       <div class="input-box">
-        <p class="input-label"><span>Required</span>Work:</p>
+        <p class="input-label">
+          <span>{{ $t('admin.required') }}</span
+          >{{ $t('admin.work') }}
+        </p>
         <div class="box">
           <label
             for="online"
-            :class="{ 'is-checked': workType === 'Online', 'input-error': formErrors.workType }"
-            ><input
-              type="radio"
-              name="work"
-              id="online"
-              value="Online"
-              v-model="workType"
-            />Online</label
+            :class="{ 'is-checked': isWorkType === 'true', 'input-error': formErrors.isWorkType }"
+            ><input type="radio" name="work" id="online" value="true" v-model="isWorkType" />{{
+              $t('admin.online')
+            }}</label
           >
           <label
             for="offline"
-            :class="{ 'is-checked': workType === 'Offline', 'input-error': formErrors.workType }"
-            ><input
-              type="radio"
-              name="work"
-              id="offline"
-              value="Offline"
-              v-model="workType"
-            />Offline</label
+            :class="{ 'is-checked': isWorkType === 'false', 'input-error': formErrors.isWorkType }"
+            ><input type="radio" name="work" id="offline" value="false" v-model="isWorkType" />{{
+              $t('admin.offline')
+            }}</label
           >
         </div>
-        <p v-if="formErrors.workType" class="error-msg">{{ formErrors.workType }}</p>
+        <p v-if="formErrors.isWorkType" class="error-msg">{{ formErrors.isWorkType }}</p>
       </div>
       <div class="input-box">
-        <p class="input-label"><span>Required</span>URL:</p>
+        <p class="input-label">
+          <span>{{ $t('admin.required') }}</span
+          >URL
+        </p>
         <input
           class="input-url"
           type="text"
-          placeholder="Social URL"
+          :placeholder="$t('admin.social-url')"
           v-model="socialURL"
           :class="{ 'input-error': formErrors.socialURL }"
         />
         <p v-if="formErrors.socialURL" class="error-msg">{{ formErrors.socialURL }}</p>
       </div>
       <div class="btns">
-        <button class="btn-submit" type="submit">Submit</button>
-        <button class="btn-cancel" type="button" @click="resetForm">Cancel</button>
+        <button class="btn-submit" type="submit">{{ $t('admin.submit') }}</button>
+        <button class="btn-cancel" type="button" @click="resetForm">
+          {{ $t('admin.cancel') }}
+        </button>
       </div>
     </form>
     <UserModal
@@ -73,7 +74,7 @@
 import MultiSelectComp from '@/components/MultiSelectComp.vue'
 import DatePickerComp from '@/components/DatePickerComp.vue'
 import UserModal from './UserModal.vue'
-import { reactive, ref, watch } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import HomeHeader from '@/components/home/HomeHeader.vue'
 
 const strengths = ref([
@@ -111,12 +112,12 @@ const strengths = ref([
 
 const selectedOptions = ref([])
 const selectedDateTime = ref('')
-const workType = ref('')
+const isWorkType = ref('')
 const socialURL = ref('')
 const formErrors = reactive({
   selectedOptions: '',
   selectedDateTime: '',
-  workType: '',
+  isWorkType: '',
   socialURL: '',
 })
 
@@ -125,7 +126,7 @@ const isModalVisible = ref(false)
 const submittedData = ref({
   strengths: [],
   joiningDate: '',
-  workType: '',
+  isWorkType: '',
   socialURL: '',
 })
 
@@ -141,9 +142,9 @@ watch(selectedDateTime, (newValue) => {
   }
 })
 
-watch(workType, (newValue) => {
+watch(isWorkType, (newValue) => {
   if (newValue) {
-    formErrors.workType = ''
+    formErrors.isWorkType = ''
   }
 })
 
@@ -180,11 +181,11 @@ const validateForm = () => {
     }
   }
 
-  if (!workType.value) {
-    formErrors.workType = 'Please select a work type.'
+  if (!isWorkType.value) {
+    formErrors.isWorkType = 'Please select a work type.'
     isValid = false
   } else {
-    formErrors.workType = ''
+    formErrors.isWorkType = ''
   }
 
   if (!socialURL.value.trim()) {
@@ -205,7 +206,7 @@ const handleSubmit = () => {
     submittedData.value = {
       strengths: selectedOptions.value,
       joiningDate: selectedDateTime.value,
-      workType: workType.value,
+      isWorkType: isWorkType.value,
       socialURL: socialURL.value,
     }
     isModalVisible.value = true
@@ -219,7 +220,7 @@ const closeModal = () => {
 const resetForm = () => {
   selectedOptions.value = []
   selectedDateTime.value = ''
-  workType.value = ''
+  isWorkType.value = ''
   socialURL.value = ''
   resetFormTrigger.value = true
   setTimeout(() => {
@@ -229,6 +230,18 @@ const resetForm = () => {
     formErrors[key] = ''
   }
 }
+
+onMounted(() => {
+  const savedData = localStorage.getItem('aboutUsData')
+  if (savedData) {
+    const parsedData = JSON.parse(savedData)
+    selectedOptions.value = parsedData.strengths || []
+    selectedDateTime.value = parsedData.joiningDate || ''
+    isWorkType.value = parsedData.isWorkType || ''
+    socialURL.value = parsedData.socialURL || ''
+    handleDatetimeUpdate(parsedData.joiningDate)
+  }
+})
 </script>
 <style lang="scss">
 .form-container {
