@@ -135,7 +135,9 @@ const filteredOptions = computed(() =>
   props.options.filter(
     (option) =>
       (option.label && option.label.toLowerCase().includes(filter.value.toLowerCase())) ||
-      (option.name && option.name.toLowerCase().includes(filter.value.toLowerCase())),
+      (!selectedValues.value.some((selected) => selected.code === option.code) &&
+        option.name &&
+        option.name.toLowerCase().includes(filter.value.toLowerCase())),
   ),
 )
 
