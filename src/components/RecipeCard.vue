@@ -2,7 +2,7 @@
   <div class="card" @click="viewDetails(id)">
     <div class="card-image">
       <img :src="image" :alt="title" />
-      <button class="card-favorite" @click="toggleFavorite">
+      <button class="card-favorite" @click.stop="toggleFavorite">
         <slot name="favorite-icon">
           <UnFavoriteIcon v-if="!isFavorite" />
           <FavoriteIcon v-else />

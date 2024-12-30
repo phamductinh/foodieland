@@ -47,14 +47,9 @@
       </ul>
     </div>
   </div>
-  <div class="selected-users-box">
-    <div
-      v-show="isChooseUser"
-      v-for="item in selectedValues"
-      :key="item.code"
-      class="multi-selected-item"
-    >
-      {{ item.label || item.name }}
+  <div v-show="isChooseUser" class="selected-users-box">
+    <div v-for="item in selectedValues" :key="item.code" class="multi-selected-item">
+      {{ item.code + ' - ' + item.name || item.label }}
       <button @click="removeOption(item)"><i class="fa-solid fa-xmark"></i></button>
     </div>
   </div>
@@ -291,6 +286,11 @@ onBeforeUnmount(() => {
           background: none;
           border: none;
           cursor: pointer;
+          transition: all 0.3s ease;
+
+          &:hover {
+            transform: scale(1.1);
+          }
         }
       }
     }
@@ -351,7 +351,7 @@ onBeforeUnmount(() => {
   width: 100%;
   padding: 10px;
   border: 1px solid #dcdcdc;
-  margin-top: 20px;
+  margin-top: 40px;
   border-radius: 3px;
   max-height: 200px;
   min-height: 100px;
@@ -368,6 +368,24 @@ onBeforeUnmount(() => {
 
   &::-webkit-scrollbar-track {
     background-color: #f1f1f1;
+  }
+
+  .multi-selected-item {
+    &:hover {
+      color: #627d98;
+    }
+    button {
+      margin-left: 0.5rem;
+      background: none;
+      border: none;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
   }
 }
 </style>

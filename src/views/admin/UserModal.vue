@@ -21,7 +21,6 @@
 
 <script lang="ts" setup>
 import moment from 'moment'
-import { defineProps } from 'vue'
 import { useStore } from 'vuex'
 
 const store = useStore()

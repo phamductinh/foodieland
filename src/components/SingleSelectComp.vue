@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, defineEmits, ref, watch, type PropType, nextTick } from 'vue'
+import { ref, watch, type PropType, nextTick } from 'vue'
 
 const props = defineProps({
   options: {
